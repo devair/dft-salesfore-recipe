@@ -1,0 +1,28 @@
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
+<template>
+    <lightning-card title={title} icon-name="standard:case">
+        <lightning-button label="New" slot="actions" onclick={handleNewButtonClick}></lightning-button>
+
+        <template lwc:if={data}>
+            <lightning-datatable
+                key-field="Id"
+                data={data}
+                columns={columns}
+                show-row-number-column
+                onrowaction={handleRowAction}
+                min-column-width="80"
+                default-sort-direction={defaultSortDirection}
+                sorted-direction={sortDirection}
+                sorted-by={sortedBy}
+                onsort={onHandleSort}
+            >
+            </lightning-datatable>
+        </template>
+        <template lwc:else>
+            <p>No Case records to display.</p>
+        </template>
+        
+    </lightning-card>
+</template>
