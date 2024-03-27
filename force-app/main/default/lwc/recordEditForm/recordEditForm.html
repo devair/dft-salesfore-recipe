@@ -1,0 +1,31 @@
+<template>
+    
+    <lightning-record-edit-form
+        object-api-name={objectApiName}
+        record-id={recordId}
+        onsubmit={handleSubmit}
+        onsuccess={handleSuccess}
+        >
+        <lightning-card  title="Contact">            
+            <lightning-messages></lightning-messages>
+            <lightning-input-field field-name={contactNameField}> </lightning-input-field>
+
+            <div slot="footer"> 
+                <lightning-button class="slds-button slds-m-left_x-small"
+                    variant="brand"
+                    type="submit"
+                    name="save"
+                    label="Save"
+                ></lightning-button>
+                <lightning-button class="slds-button"
+                    variant="neutral"                            
+                    name="close"
+                    label="Close"
+                    onclick={handleClose}
+                >                
+                </lightning-button>                           
+            </div>
+        </lightning-card>
+    </lightning-record-edit-form>
+
+</template>
