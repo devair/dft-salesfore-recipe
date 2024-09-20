@@ -1,0 +1,6 @@
+<aura:documentation>
+	<aura:description>Documentation</aura:description>
+	<aura:example name="ExampleName" ref="exampleComponentName" label="Label">
+		Componente Aura para sobrescrever o comportamento padrão do botão New do objeto Case.		
+	</aura:example>
+</aura:documentation>
