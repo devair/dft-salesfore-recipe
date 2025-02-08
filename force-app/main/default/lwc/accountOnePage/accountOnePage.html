@@ -1,0 +1,32 @@
+<template>
+    <lightning-record-view-form
+            object-api-name={objectApiName}
+            record-id={recordId}                
+        >
+        <lightning-card  variant="Narrow" icon-name="standard:account"> 
+            <lightning-button-group slot="actions">
+                <lightning-button label="Refresh"></lightning-button>
+                <lightning-button label="Edit"></lightning-button>
+                <lightning-button label="Save"></lightning-button>            
+            </lightning-button-group> 
+
+            <h3 slot="title">
+                <lightning-output-field field-name="Name" variant="label-hidden"></lightning-output-field>
+            </h3>
+            
+
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-output-field field-name="Name"></lightning-output-field>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-output-field field-name="Phone"></lightning-output-field>
+                </div>
+            </div>                        
+            <p slot="footer">Card Footer</p>
+        </lightning-card>
+    </lightning-record-view-form>
+</template>
+
+
+
