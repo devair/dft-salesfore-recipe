@@ -19,7 +19,7 @@ public with sharing class AccountContactController {
             accWrapper.name = acc.Name;
             accWrapper.phone = acc.Phone;
             accWrapper.status = acc.BlockStatus__c;
-            accWrapper.parentId = acc.Id;
+            accWrapper.parentId = null;
             accWrapper.children = new List<AccountWrapper>();
             
             for (Account con : acc.ChildAccounts) {

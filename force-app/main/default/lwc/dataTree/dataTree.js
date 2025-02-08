@@ -23,7 +23,8 @@ const COLUMNS = [
             label: 'One Page', 
             name: 'onePage',
             variant: 'brand' // Estilo azul Salesforce
-        } 
+        },
+        cellAttributes: { class: { fieldName: 'buttonVisibility' } } // Controla visibilidade
     }
 ];
 
@@ -53,7 +54,8 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
             phone: account.phone,
             status: account.status,  
             recordUrl: `/${account.id}`,
-            parentId: account.parentId,
+            parentId: account.id,
+            buttonVisibility: '',
             _children: account.children?.map(child => ({
                 id: child.id,
                 name: child.name,
@@ -61,6 +63,7 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
                 status: child.status,
                 recordUrl: `/${child.id}`,
                 parentId: child.parentId,
+                buttonVisibility: 'slds-hidden' // Esconde o botão para filhos
             }))
         }));
         
