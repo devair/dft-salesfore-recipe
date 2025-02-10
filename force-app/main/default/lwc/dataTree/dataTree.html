@@ -21,26 +21,28 @@
                             <lightning-button-icon icon-name="standard:account_info" 
                                 alternative-text="One Page"
                                 title="One Page"
+                                class="slds-button_icon-large slds-m-left_xx-small"
                                 value={account.parentId} onclick={handleOnePage}
+                                variant="border-filled"
                                 >
-                            </lightning-button-icon>                                                        
+                            </lightning-button-icon>                            
                         </lightning-button-group> 
-
-                        <div class="card-content">
-                            <div>
+            
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_small">
                                 <p class="card-label">Telefone</p>
                                 <p class="card-field">{account.phone}</p>
                             </div>
-                            <div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_small">
                                 <p class="card-label">Email</p>
                                 <p class="card-field">{account.email}</p>
-                            </div>                                                        
-                        </div>                        
+                            </div>
+                        </div>                                                   
                         <template if:true={account._children.length}>
                             <lightning-accordion allow-multiple-sections-open>
-                                <lightning-accordion-section name="children" label="Contas vinculadas">
-                                    <template for:each={account._children} for:item="child">
-                                        <div key={child.id} class="card-container">                
+                                <template for:each={account._children} for:item="child">
+                                    <lightning-accordion-section key={child.id} name="children" label={child.name}>
+                                        <div class="card-container">                
                                             <lightning-card>
                                                 <h3 slot="title">
                                                     <lightning-formatted-url 
@@ -50,20 +52,30 @@
                                                         class="record-link">
                                                     </lightning-formatted-url>
                                                 </h3>
+                                                <div class="slds-grid">
+                                                    <div class="slds-col slds-size_1-of-2">
+                                                        <p class="card-label">Telefone</p>
+                                                        <p class="card-field">{account.phone}</p>
+                                                    </div>
+                                                    <div class="slds-col slds-size_1-of-2">
+                                                        <p class="card-label">Email</p>
+                                                        <p class="card-field">{account.email}</p>
+                                                    </div>
+                                                </div>  
                                                 <div class="card-content">
                                                     <div>
-                                                        <p class="card-label">Telefone</p>
+                                                        <p class="card-label">Telefone 2</p>
                                                         <p class="card-field">{child.phone}</p>
                                                     </div>
                                                     <div>
-                                                        <p class="card-label">Email</p>
+                                                        <p class="card-label">Email 2</p>
                                                         <p class="card-field">{child.email}</p>
                                                     </div>    
                                                 </div>
                                             </lightning-card>
                                         </div>                                                                                
+                                    </lightning-accordion-section>
                                     </template>
-                                </lightning-accordion-section>
                             </lightning-accordion>
                         </template>
                     </lightning-card>

@@ -1,7 +1,7 @@
 .card-container {
     border: 1px solid #d1d1d1;
     border-radius: 8px;
-    padding: 10px;
+    padding: 5px;
     margin-bottom: 15px;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -16,9 +16,9 @@
 .card-field {
     font-size: 14px;
     color: #333;
+    font-weight: bold;
 }
 
-.card-label {
-    font-weight: bold;
+.card-label {    
     color: #555;
 }
