@@ -1,5 +1,9 @@
 <template>
     <lightning-card title="Árvore de Grupo Econômico e Contas" icon-name="standard:account">                            
+        <lightning-button-group slot="actions">                
+            <lightning-input type="text" value={searchTerm} onchange={handleSearchChange} label="Digite o nome do cliente"></lightning-input>
+        </lightning-button-group>     
+
         <template if:true={isMobile}>
             <template for:each={treeData} for:item="account">
                 <div key={account.id} class="card-container">                
@@ -12,6 +16,16 @@
                                 class="record-link">
                             </lightning-formatted-url>
                         </h3>
+
+                        <lightning-button-group slot="actions">                
+                            <lightning-button-icon icon-name="standard:account_info" 
+                                alternative-text="One Page"
+                                title="One Page"
+                                value={account.parentId} onclick={handleOnePage}
+                                >
+                            </lightning-button-icon>                                                        
+                        </lightning-button-group> 
+
                         <div class="card-content">
                             <div>
                                 <p class="card-label">Telefone</p>
@@ -57,15 +71,16 @@
             </template>
         </template>
 
-        <template if:false={isMobile}>
-            <lightning-tree-grid 
+        <template if:false={isMobile}>  
+                                              
+            <lightning-tree-grid class="lightning-tree-grid"
                 key-field="id"
                 columns={columns}
                 data={treeData}                        
                 hide-checkbox-column="true"
                 onrowaction={handleRowAction}
             >
-            </lightning-tree-grid>
+            </lightning-tree-grid>            
         </template>        
     </lightning-card>
 </template>

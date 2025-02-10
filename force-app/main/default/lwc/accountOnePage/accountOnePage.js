@@ -6,6 +6,6 @@ export default class AccountOnePage extends LightningElement {
     objectApiName = 'Account';
  
     connectedCallback(){
-        console.log(this.recordId);
+        console.log(this.recordId);        
     }
 }

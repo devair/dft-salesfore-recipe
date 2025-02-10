@@ -1,7 +1,8 @@
 import { LightningElement, wire, track } from 'lwc';
-import getAccountsWithContacts from '@salesforce/apex/AccountContactController.getAccountsWithContacts';
+import getAccountsWithChildren from '@salesforce/apex/AccountContactController.getAccountsWithChildren';
 import { NavigationMixin } from 'lightning/navigation';
 import FORM_FACTOR from '@salesforce/client/formFactor';
+import { refreshApex } from "@salesforce/apex";
 
 const COLUMNS = [    
     { 
@@ -32,12 +33,14 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
     
     @track treeData = [];
     @track currentExpandedRows;
-    isMobile = FORM_FACTOR === 'Small';
-    
+    isMobile = FORM_FACTOR === 'Small';    
     columns = COLUMNS;
+    @track searchTerm='';
+
+    timeoutId
 
     
-    @wire(getAccountsWithContacts)
+    @wire(getAccountsWithChildren, { searchTerm: '$searchTerm'})
     wiredAccounts({ error, data }) {
         if (data) {            
             this.treeData = this.formatTreeData(data);            
@@ -71,9 +74,20 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
     }
 
     connectedCallback() {
-        console.log('The device form factor is: ' + FORM_FACTOR);
+        console.log('The device form factor is: ' + FORM_FACTOR);        
     }
-  
+
+    renderedCallback(){
+        const grid =  this.template.querySelector('lightning-tree-grid');
+
+        if(this.searchTerm){
+            if(grid) grid.expandAll();
+        }
+        else {
+            if(grid) grid.collapseAll();
+        }
+    } 
+    
     handleRowAction(event) {
         const recordId = event.detail.row.parentId;
         const actionName = event.detail.action.name;
@@ -81,6 +95,11 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
         if (actionName === 'onePage') {
             this.openLightningTab(recordId);
         }
+    }
+
+    handleOnePage(event){
+        const recordId = event.target.value;
+        this.openLightningTab(recordId);
     }
 
     openLightningTab(recordId) {
@@ -97,5 +116,19 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
             type: 'standard__webPage',
             attributes: {url: '/one/one.app#'+encodeDef}
         });
+    }
+
+    handleSearchChange(event){
+        const searchTerm = event.target.value;
+        console.info(searchTerm);
+
+        this.searchTerm = searchTerm;
+        clearTimeout(this.timeoutId);
+
+        // Define um novo timeout de 3 segundos
+        this.timeoutId = setTimeout(async () => {            
+            await refreshApex(this.wiredAccounts);
+        }, 3000);
+
     }
 }
