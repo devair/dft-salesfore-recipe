@@ -45,7 +45,7 @@
                             </lightning-accordion-section>
                         </lightning-accordion>                                            
                         <template if:true={account._children.length}>
-                            <lightning-accordion allow-multiple-sections-open aria-label="Contas do Grupo">
+                            <lightning-accordion allow-multiple-sections-open aria-label="Contas do grupo">
                                 <template for:each={account._children} for:item="child">
                                     <lightning-accordion-section key={child.id} name="children" label={child.name}>
                                         <div class="card-container">                
