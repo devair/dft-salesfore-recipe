@@ -6,81 +6,94 @@ public with sharing class AccountContactController {
         List<AccountWrapper> accountList = new List<AccountWrapper>();            
         
         if(String.isEmpty(searchTerm)){
-            List<Account> parentAccounts = getAccounts();
-            for(Account acc: parentAccounts){
-                AccountWrapper accWrapper = new AccountWrapper();
-                accWrapper.id = acc.Id;
-                accWrapper.label = acc.Name;
-                accWrapper.name = acc.Name;
-                accWrapper.phone = acc.Phone;
-                accWrapper.status = acc.BlockStatus__c;
-                accWrapper.parentId = null;
-                accWrapper.children = new List<AccountWrapper>();
+            List<Account> parentAccounts = getAccounts(50000, 0);
 
-                for (Account con : acc.ChildAccounts) {
-                    AccountWrapper contactWrapper = new AccountWrapper();
-                    contactWrapper.id = con.Id;
-                    contactWrapper.label = con.Name;
-                    contactWrapper.name = con.Name;
-                    contactWrapper.phone = con.Phone;
-                    contactWrapper.status = con.BlockStatus__c;
-                    contactWrapper.parentId = acc.Id;
+            for(Account parent: parentAccounts){
+                AccountWrapper parentWrapper = new AccountWrapper();
+                parentWrapper.id = parent.Id;
+                parentWrapper.label = parent.Name;
+                parentWrapper.name = parent.Name;
+                parentWrapper.phone = parent.Phone;
+                parentWrapper.status = parent.BlockStatus__c;
+                parentWrapper.children = new List<AccountWrapper>();              
+
+                for(Account child: parent.ChildAccounts){
+                    AccountWrapper childWrapper = new AccountWrapper();
+                    childWrapper.id = child.Id;
+                    childWrapper.label = child.Name;
+                    childWrapper.name = child.Name;
+                    childWrapper.phone = child.Phone;
+                    childWrapper.status = child.BlockStatus__c;
+                    childWrapper.parentId = parent.Id; 
                     
-                    accWrapper.children.add(contactWrapper);
+                    parentWrapper.children.add(childWrapper);
                 }
-                accountList.add(accWrapper);
+
+                accountList.add(parentWrapper);
             }
         }
-        else{
-            // Get Children Accounts with the search term even null
-            List<Account> childrenAccounts = getAccounts(searchTerm, false, null);
-            Map<Id, List<AccountWrapper>> mapChildrenAccounts = new Map<Id, List<AccountWrapper> > ();
+        else {
 
-            for(Account acc: childrenAccounts){  
-                AccountWrapper child= new AccountWrapper();
-                child.id = acc.Id;
-                child.label = acc.Name;
-                child.name = acc.Name;
-                child.phone = acc.Phone;
-                child.status = acc.BlockStatus__c;
-                child.parentId = acc.ParentId;
+            List<Account> matchingAccounts  = getAccounts(searchTerm, 50000, 0);
+            Set<Id> parentIds = new Set<Id>(); // parentIds para soql dos pais
+            Map<Id, Account> parentMap = new Map<Id, Account>();
+            Map<Id, Map<Id, Account>> childMap = new Map<Id, Map<Id,Account>>();
 
-                List<AccountWrapper> children = mapChildrenAccounts.get(acc.ParentId);
-                if(children == null) {
-                    children = new List<AccountWrapper> { child };
-                    mapChildrenAccounts.put(acc.ParentId, children );
+            for(Account acc: matchingAccounts){
+                if (acc.ParentId != NULL ){
+                    parentIds.add(acc.ParentId);
                 }
-                else{
-                    children.add(child);
+                else{                     
+                    parentMap.put(acc.Id, acc);                                                            
+                }  
+                                        
+                if (!childMap.containsKey( acc.ParentId)) childMap.put(acc.ParentId, new Map<Id,Account>());                    
+                childMap.get(acc.ParentId).put(acc.Id, acc);  
+            }
+
+            // Buscar contas pais das contas filhas encontradas
+            if (!parentIds.isEmpty()) {                
+                for (Account parent : [SELECT Id, Name, Phone, toLabel(BlockStatus__c), ParentId 
+                                      FROM Account WHERE Id IN :parentIds]) 
+                {
+                    if(!parentMap.containsKey(parent.Id) ){
+                        parentMap.put(parent.Id, parent);
+                    }
+                }                                             
+            }
+
+            // Construir a estrutura de hierarquia
+            for (Account parent : parentMap.values()) {
+                 
+                AccountWrapper parentWrapper = new AccountWrapper();
+                parentWrapper.id = parent.Id;
+                parentWrapper.label = parent.Name;
+                parentWrapper.name = parent.Name;
+                parentWrapper.phone = parent.Phone;
+                parentWrapper.status = parent.BlockStatus__c;
+                parentWrapper.children = new List<AccountWrapper>();              
+
+                Map<Id, Account> children = childMap.get(parent.Id);     
+
+                if (children == null){
+                    children = new Map<Id, Account>(parent.ChildAccounts);                     
+                } 
+
+                for(Account child: children.values()){                         
+                    AccountWrapper childWrapper = new AccountWrapper();
+                    childWrapper.id = child.Id;
+                    childWrapper.label = child.Name;
+                    childWrapper.name = child.Name;
+                    childWrapper.phone = child.Phone;
+                    childWrapper.status = child.BlockStatus__c;
+                    childWrapper.parentId = parent.Id;                         
+                    parentWrapper.children.add(childWrapper);
                 }
+
+                accountList.add(parentWrapper);
+                
             }
 
-            Set<Id> parentsId;
-            if( !mapChildrenAccounts.isEmpty() ) parentsId = mapChildrenAccounts.keySet();
-
-            // Get Parent Accounts with the search term even null
-            List<Account> parentAccounts = getAccounts(searchTerm, true, parentsId);    
-            Map<Id, AccountWrapper> mapParentAccounts = new Map<Id, AccountWrapper> ();        
-    
-            for(Account acc: parentAccounts){  
-                AccountWrapper accWrapper = new AccountWrapper();
-                accWrapper.id = acc.Id;
-                accWrapper.label = acc.Name;
-                accWrapper.name = acc.Name;
-                accWrapper.phone = acc.Phone;
-                accWrapper.status = acc.BlockStatus__c;
-                accWrapper.parentId = null;
-                accWrapper.children = new List<AccountWrapper>();
-                mapParentAccounts.put(acc.Id, accWrapper);
-            }
-            
-            // Buscar todas as contas com contatos relacionados
-            
-            for (AccountWrapper acc : mapParentAccounts.values()) {
-                List<AccountWrapper> children = mapChildrenAccounts.get(acc.id);
-                if(children != null) acc.children.addAll(children);
-                accountList.add(acc);
-            }
         }
         
         
@@ -94,61 +107,38 @@ public with sharing class AccountContactController {
         @AuraEnabled public String phone;
         @AuraEnabled public String status;
         @AuraEnabled public String parentId;
-        @AuraEnabled public List<AccountWrapper> children;
-        
+        @AuraEnabled public List<AccountWrapper> children;        
+    }
+
+    private static List<Account> getAccounts(Integer limitValue, Integer offsetValue){
+        return getAccounts(null,50000, 0);
     }
     /**
      * Metodo para listar contas sem filtro
      */
-    private static List<Account> getAccounts(){
+    private static List<Account> getAccounts(String searchTerm, Integer limitValue, Integer offsetValue){
+
         String query = ' SELECT Id, Name, Phone, toLabel(BlockStatus__c), ParentId, ' +                      
-                        ' (SELECT Id, Name, Phone, toLabel(BlockStatus__c) FROM ChildAccounts ) ' +
-                        ' FROM Account ' +
-                        ' WHERE  ParentId = NULL' +
-                        ' ORDER BY Name ' +
-                        ' LIMIT 50000 ';
-        return Database.query(query);      
-    }
-
-    private static List<Account> getAccounts (String searchTerm, Boolean isParent, Set<Id> parentsForChildren ){
-        Map<String, Object> bindVariablesMap = new Map<String, Object>();
+                        ' (SELECT Id, Name, Phone, toLabel(BlockStatus__c), ParentId FROM ChildAccounts ) ' +
+                        ' FROM Account ';
         
-        String query = ' SELECT Id, Name, Phone, toLabel(BlockStatus__c), ParentId ' +                      
-                       ' FROM Account ';                       
-        if(isParent || String.isEmpty(searchTerm)){
-            query += ' WHERE  ParentId = NULL';
+        if(String.isEmpty(searchTerm)){
+            query += ' WHERE  ParentId = NULL' + 
+                    ' ORDER BY Name ' +
+                    ' LIMIT :limitValue OFFSET :offsetValue ';
+        
+            return Database.query(query);      
         }
-        else {
-            query += ' WHERE  ParentId != NULL';
-        }
-               
-        List<String> whereFilters = new List<String>();
-
-        if(String.isNotBlank(searchTerm)){
-            searchTerm = '%' + searchTerm + '%';
+        else{
+            searchTerm = '%'+searchTerm+'%';
+            Map<String, Object> bindVariablesMap = new Map<String, Object>();
             bindVariablesMap.put('searchTerm', searchTerm);
-            whereFilters.add('NAME LIKE :searchTerm ');
-        }
+            
+            query += ' WHERE  Name LIKE :searchTerm' +
+                    ' ORDER BY Name ' +
+                    ' LIMIT 50000 ';
         
-        if(parentsForChildren != null && !parentsForChildren.isEmpty()){
-            bindVariablesMap.put('parentsForChildren', parentsForChildren);   
-            whereFilters.add('Id IN:parentsForChildren');
-        }
-
-        if(!whereFilters.isEmpty()){
-            query += ' AND ( ';            
-            for(Integer i=0; i< whereFilters.size(); i++){
-                query += ' (' + whereFilters.get(i) + ') ';
-                if(i+1< whereFilters.size()) query+= ' OR ';
-            }
-            query += ') ';
-        }
-
-        query += ' ORDER BY Name ' + 
-                 ' LIMIT 50000 ';
-
-        System.debug(query);
-
-        return Database.queryWithBinds(query, bindVariablesMap, AccessLevel.USER_MODE);
-    }
+            return Database.queryWithBinds(query, bindVariablesMap, AccessLevel.USER_MODE);
+        }                            
+    }    
 }

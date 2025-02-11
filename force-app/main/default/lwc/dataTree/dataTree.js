@@ -29,14 +29,13 @@ const COLUMNS = [
 
 export default class DataTDataTreereeLWC extends NavigationMixin(LightningElement) {
     
-    @track treeData = [];
-    @track currentExpandedRows;
+    @track treeData = [];    
+    @track searchTerm='';
+    @track offset = 0;
+    @track hasMoreData = true;
+
     isMobile = FORM_FACTOR === 'Small';    
     columns = COLUMNS;
-    @track searchTerm='';
-
-    timeoutId
-
     
     @wire(getAccountsWithChildren, { searchTerm: '$searchTerm'})
     wiredAccounts({ error, data }) {
@@ -118,15 +117,6 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
 
     handleSearchChange(event){
         const searchTerm = event.target.value;
-        console.info(searchTerm);
-
         this.searchTerm = searchTerm;
-        clearTimeout(this.timeoutId);
-
-        // Define um novo timeout de 3 segundos
-            this.treeData = [];
-            await refreshApex(this.wiredAccounts);
-        }, 3000);
-
     }
 }
