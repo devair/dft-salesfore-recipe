@@ -16,14 +16,12 @@ const COLUMNS = [
     },
     { label: 'Telefone', fieldName: 'phone', type: 'phone' },
     { label: 'Status', fieldName: 'status', type: 'text' },
-    { 
-        label: 'Ações', 
-        fieldName: 'id', 
+    { label: 'One Page', 
         type: 'button', 
         typeAttributes: { 
-            label: 'One Page', 
+            iconName: 'utility:company', 
             name: 'onePage',
-            variant: 'brand' // Estilo azul Salesforce
+            label: ''
         },
         cellAttributes: { class: { fieldName: 'buttonVisibility' } } // Controla visibilidade
     }
@@ -126,7 +124,7 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
         clearTimeout(this.timeoutId);
 
         // Define um novo timeout de 3 segundos
-        this.timeoutId = setTimeout(async () => {            
+            this.treeData = [];
             await refreshApex(this.wiredAccounts);
         }, 3000);
 
