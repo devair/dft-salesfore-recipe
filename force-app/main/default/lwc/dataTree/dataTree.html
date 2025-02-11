@@ -1,10 +1,13 @@
-<template>
-    <lightning-card title="Árvore de Grupo Econômico e Contas" icon-name="standard:account">                            
-        <lightning-button-group slot="actions">                
-            <lightning-input type="text" value={searchTerm} onchange={handleSearchChange} label="Digite o nome do cliente"></lightning-input>
-        </lightning-button-group>     
-
-        <template if:true={isMobile}>
+<template>   
+    <template if:true={isMobile}>
+        <div class="fixed-header">
+            <lightning-input type="search" class="slds-m-left_xx-small slds-m-right_xx-small"
+                value={searchTerm} 
+                onchange={handleSearchChange} 
+                placeholder="Digite o nome do cliente"
+            ></lightning-input>
+        </div>
+        <lightning-card title="Grupos Econômicos" icon-name="standard:account">  
             <template for:each={treeData} for:item="account">
                 <div key={account.id} class="card-container">                
                     <lightning-card>
@@ -27,19 +30,22 @@
                                 >
                             </lightning-button-icon>                            
                         </lightning-button-group> 
-            
-                        <div class="slds-grid slds-wrap">
-                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_small">
-                                <p class="card-label">Telefone</p>
-                                <p class="card-field">{account.phone}</p>
-                            </div>
-                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_small">
-                                <p class="card-label">Email</p>
-                                <p class="card-field">{account.email}</p>
-                            </div>
-                        </div>                                                   
+                        <lightning-accordion allow-multiple-sections-open>
+                            <lightning-accordion-section name="details" label="Detalhes do grupo">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_small">
+                                        <p class="card-label">Telefone</p>
+                                        <p class="card-field">{account.phone}</p>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_small">
+                                        <p class="card-label">Email</p>
+                                        <p class="card-field">{account.email}</p>
+                                    </div>
+                                </div>       
+                            </lightning-accordion-section>
+                        </lightning-accordion>                                            
                         <template if:true={account._children.length}>
-                            <lightning-accordion allow-multiple-sections-open>
+                            <lightning-accordion allow-multiple-sections-open aria-label="Contas do Grupo">
                                 <template for:each={account._children} for:item="child">
                                     <lightning-accordion-section key={child.id} name="children" label={child.name}>
                                         <div class="card-container">                
@@ -52,16 +58,17 @@
                                                         class="record-link">
                                                     </lightning-formatted-url>
                                                 </h3>
-                                                <div class="slds-grid">
-                                                    <div class="slds-col slds-size_1-of-2">
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_small">
                                                         <p class="card-label">Telefone</p>
                                                         <p class="card-field">{account.phone}</p>
                                                     </div>
-                                                    <div class="slds-col slds-size_1-of-2">
+                                                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-var-m-bottom_small">
                                                         <p class="card-label">Email</p>
                                                         <p class="card-field">{account.email}</p>
                                                     </div>
                                                 </div>  
+                                                <!--
                                                 <div class="card-content">
                                                     <div>
                                                         <p class="card-label">Telefone 2</p>
@@ -71,7 +78,7 @@
                                                         <p class="card-label">Email 2</p>
                                                         <p class="card-field">{child.email}</p>
                                                     </div>    
-                                                </div>
+                                                </div> -->
                                             </lightning-card>
                                         </div>                                                                                
                                     </lightning-accordion-section>
@@ -81,10 +88,18 @@
                     </lightning-card>
                 </div>
             </template>
-        </template>
-
-        <template if:false={isMobile}>  
-                                              
+        </lightning-card>
+    </template>
+    <template if:false={isMobile}>                           
+        <lightning-card title="Grupos Econômicos" icon-name="standard:account">  
+            <lightning-button-group slot="actions">                
+                <lightning-input type="search" value={searchTerm} 
+                    onchange={handleSearchChange} 
+                    placeholder="Digite o nome do cliente"
+                >
+                </lightning-input>
+            </lightning-button-group>     
+                                
             <lightning-tree-grid class="lightning-tree-grid"
                 key-field="id"
                 columns={columns}
@@ -93,6 +108,7 @@
                 onrowaction={handleRowAction}
             >
             </lightning-tree-grid>            
-        </template>        
-    </lightning-card>
+        </lightning-card>
+    </template>        
 </template>
+
