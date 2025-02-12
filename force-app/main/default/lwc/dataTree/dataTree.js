@@ -2,7 +2,6 @@ import { LightningElement, wire, track } from 'lwc';
 import getAccountsWithChildren from '@salesforce/apex/AccountContactController.getAccountsWithChildren';
 import { NavigationMixin } from 'lightning/navigation';
 import FORM_FACTOR from '@salesforce/client/formFactor';
-import { refreshApex } from "@salesforce/apex";
 
 const COLUMNS = [    
     { 
@@ -30,7 +29,7 @@ const COLUMNS = [
 export default class DataTDataTreereeLWC extends NavigationMixin(LightningElement) {
     
     @track treeData = [];    
-    @track searchTerm='';
+    @track searchTerm ='';
     @track offset = 0;
     @track hasMoreData = true;
 
