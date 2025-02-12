@@ -1,0 +1,25 @@
+<template>
+    <c-account-detail account={account}></c-account-detail>
+   <template if:true={account._children.length}>                
+        <lightning-accordion allow-multiple-sections-open aria-label="Contas do grupo">
+            <lightning-accordion-section  name="children" label="Contas do grupo">
+                <template for:each={account._children} for:item="child">
+                    <div key={account.id} class="slds-p-bottom_x-small">      
+                        <lightning-card key={child.id}  icon-name="standard:account" variant="base">
+                        <div slot="title">
+                            {child.name}
+                        </div>
+                        <div slot="actions">
+                        
+                        </div>                      
+                        <div>
+                            <!-- Card Body  -->
+                            <c-account-detail account={child}></c-account-detail>                        
+                        </div>
+                        </lightning-card>
+                    </div>
+                </template> 
+            </lightning-accordion-section>
+        </lightning-accordion>
+    </template>   
+</template>

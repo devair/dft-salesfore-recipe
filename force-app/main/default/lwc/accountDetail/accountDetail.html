@@ -1,0 +1,25 @@
+<template>
+    <div class="slds-grid slds-wrap">        
+        <div class="slds-col slds-size_2-of-2 slds-medium-size_2-of-2 slds-var-m-bottom_small">
+            <p class="card-label">Nome</p>
+            <p class="card-field">
+                <lightning-formatted-url 
+                    value={account.recordUrl} 
+                    label={account.name} 
+                    target="_self"
+                    class="record-link"
+                >
+                </lightning-formatted-url>
+            </p>           
+        </div>
+        
+       <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-2 slds-var-m-bottom_small">
+           <p class="card-label">Telefone</p>
+           <p class="card-field">{account.phone}</p>
+       </div>
+       <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-2 slds-var-m-bottom_small">
+           <p class="card-label">Email</p>
+           <p class="card-field">{account.email}</p>
+       </div>
+   </div>    
+</template>

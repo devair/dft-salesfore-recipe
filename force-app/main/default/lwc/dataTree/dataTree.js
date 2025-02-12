@@ -33,8 +33,10 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
     @track offset = 0;
     @track hasMoreData = true;
 
-    isMobile = FORM_FACTOR === 'Small';    
+    isMobile = 'Small'; //FORM_FACTOR === 'Small';    
     columns = COLUMNS;
+
+    activeSections = [];
     
     @wire(getAccountsWithChildren, { searchTerm: '$searchTerm'})
     wiredAccounts({ error, data }) {
@@ -74,13 +76,27 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
     }
 
     renderedCallback(){
-        const grid =  this.template.querySelector('lightning-tree-grid');
-
+        
         if(this.searchTerm){
-            if(grid) grid.expandAll();
+            if(this.isMobile)
+            {
+                
+            }
+            else {
+                const grid =  this.template.querySelector('lightning-tree-grid');
+                grid.expandAll();
+            }
+
         }
-        else {
-            if(grid) grid.collapseAll();
+        else {            
+            if(this.isMobile)
+            {
+                
+            }
+            else {
+                const grid =  this.template.querySelector('lightning-tree-grid');
+                grid.collapseAll();
+            }
         }
     } 
     
