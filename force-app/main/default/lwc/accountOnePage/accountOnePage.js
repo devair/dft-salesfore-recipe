@@ -1,6 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
 import { log } from 'lightning/logger';
-import { pedidos, colunasPedido, colunasItem} from './dataSamples';
+import { pedidos, colunasPedido, colunasItem, itensPedido, colunasNota} from './dataSamples';
 
 export default class AccountOnePage extends LightningElement {
 
@@ -26,7 +26,7 @@ export default class AccountOnePage extends LightningElement {
         log(msg);
     }
 
-    @track records = pedidos();
-    columns = colunasPedido();
-    columnsChildren = colunasItem();
+    @track records = itensPedido();
+    columns = colunasItem();
+    columnsChildren = colunasNota();
 }

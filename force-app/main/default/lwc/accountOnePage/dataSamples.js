@@ -20,6 +20,18 @@ export function itensPedido() {
                     emissao: '2025-02-13',
                     valor: 2500
                 },
+                { 
+                    id: 2,
+                    numero: '000000002-001',
+                    emissao: '2025-02-13',
+                    valor: 2500
+                },
+                { 
+                    id: 3,
+                    numero: '000000004-001',
+                    emissao: '2025-02-13',
+                    valor: 2500
+                },
             ]           
         },
         {         
@@ -37,24 +49,25 @@ export function itensPedido() {
             children: [
                 { 
                     id: 4,
-                    numero: 456,
+                    numero: '000000003-001',
                     emissao: '2025-01-13',
                     valor: 1000
                 },
                 { 
                     id: 5,
-                    numero: 456,
+                    numero: '000000004-001',
                     emissao: '2025-01-13',
                     valor: 1000
                 },
                 { 
                     id: 6,
-                    numero: 456,
+                    numero: '000000005-001',
                     emissao: '2025-01-13',
                     valor: 1000
                 },
                 { 
-                    numero: 456,
+                    id: 7,
+                    numero: '000000006-001',
                     emissao: '2025-01-13',
                     valor: 1000
                 }
