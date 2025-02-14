@@ -1,0 +1,17 @@
+<template>
+    <lightning-card  variant="Narrow" icon-name="standard:account"> 
+        <lightning-button-group slot="actions">                    
+            <lightning-button label="Pedidos da carteira" name="opendOrders" title="Pedido da carteira" onclick={handleClick}></lightning-button>
+            <lightning-button label="Detalhes" name="customerDetail" title="Detalhes do cliente" onclick={handleClick}></lightning-button>
+            <lightning-button label="Exportar" name="export" title="Exportar em PDF" onclick={handleClick}></lightning-button>
+        </lightning-button-group>
+
+        <h3 slot="title" class="lgc-bg">
+            {recordData.Name}
+        </h3>                                                               
+        <!-- Simple -->
+        <div class="slds-p-left_medium">            
+            <p class="slds-truncate" title="Última atualizção">Última atualização: {recordData.LastUpdate}</p>            
+        </div>                                                                    
+    </lightning-card>        
+</template>
