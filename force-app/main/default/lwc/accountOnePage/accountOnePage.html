@@ -3,74 +3,16 @@
             object-api-name={objectApiName}
             record-id={recordId}                
         >
-        <lightning-card  variant="Narrow" icon-name="standard:account"> 
-            <lightning-button-group slot="actions">                
-                <lightning-button-icon icon-name="utility:refresh" 
-                    alternative-text="Refresh"
-                    title="Refresh">
-                </lightning-button-icon>
-                
-                <lightning-button-icon icon-name="utility:save" 
-                    alternative-text="Save"
-                    title="Save">
-                </lightning-button-icon>
-            </lightning-button-group> 
-
-            <h3 slot="title">
-                <lightning-output-field field-name="Name" variant="label-hidden"></lightning-output-field>
-            </h3>
-            
-
-            <div class="slds-grid">
-                <div class="slds-col slds-size_1-of-2">
-                    <lightning-output-field field-name="Name"></lightning-output-field>
-                </div>
-                <div class="slds-col slds-size_1-of-2">
-                    <lightning-output-field field-name="Phone"></lightning-output-field>
-                </div>
-            </div>   
-            
-            
-            <lightning-accordion class="example-accordion" active-section-name="B">
-                <lightning-accordion-section name="A" label="Accordion Title A">
-                    <lightning-button-group slot="actions">                
-                        <lightning-button-icon icon-name="utility:refresh" 
-                            alternative-text="Refresh"
-                            title="Refresh">
-                        </lightning-button-icon>
-                        
-                        <lightning-button-icon icon-name="utility:save" 
-                            alternative-text="Save"
-                            title="Save">
-                        </lightning-button-icon>
-                    </lightning-button-group> 
-                    <p>This is the content area for section A.</p>
-                    <p>.</p>
-                    <p>.</p>
-                    <p>.</p>
-                    <p>The section height expands to fit your content.</p>
-                </lightning-accordion-section>
-        
-                <lightning-accordion-section name="B" label="Accordion Title B">
-                    <p>This is the content area for section B.</p>
-                    <p>.</p>
-                    <p>.</p>
-                    <p>.</p>
-                    <p>The section height expands to fit your content.</p>
-                </lightning-accordion-section>
-        
-                <lightning-accordion-section name="C" label="Accordion Title C">
-                    <p>This is the content area for section C.</p>
-                    <p>.</p>
-                    <p>.</p>
-                    <p>.</p>
-                    <p>The section height expands to fit your content.</p>
-                </lightning-accordion-section>
-            </lightning-accordion>
-
-            <p slot="footer">Card Footer</p>
-        </lightning-card>
+        <c-account-one-page-header record-data={recordData}></c-account-one-page-header>
     </lightning-record-view-form>
+
+    <c-tree-grid
+        columns={columns}
+        columns-children={columnsChildren}
+        records={records}
+    >
+    </c-tree-grid>
+    
 </template>
 
 
