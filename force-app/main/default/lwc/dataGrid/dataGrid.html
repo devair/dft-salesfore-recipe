@@ -1,0 +1,96 @@
+<template>
+    <div class="slds-table slds-table_bordered slds-table_cell-buffer">        
+        <table class="slds-table slds-table_bordered">
+            <thead>                
+                <template for:each={parentColumns} for:item="column">
+                    <th key={column.fieldName} scope="col">
+                        {column.label}
+                    </th>
+                </template>                                    
+            </thead>
+            <tbody>
+                <template for:each={processedRecords} for:item="parentRecord">
+                    <tr key={parentRecord.id} >                        
+                        <template for:each={parentRecord.cells} for:item="cell">
+                            <td key={cell.fieldName}>
+                                <template lwc:if={cell.firstField}>
+                                    <template lwc:if={parentRecord.children}>
+                                        <lightning-button-icon 
+                                            class="slds-p-left_x-small"
+                                            icon-name={parentRecord.icon}  
+                                            data-id = {parentRecord.id} 
+                                            variant="bare"
+                                            value={parentRecord}
+                                            onclick={handleExpand}
+                                        >
+                                        </lightning-button-icon>
+                                    </template>
+                                </template>
+                                <template lwc:if={cell.isDate}>                                    
+                                    <lightning-formatted-date-time value={cell.value} year="numeric" month="2-digit" day="2-digit">
+                                    </lightning-formatted-date-time>
+                                </template>
+                                <template lwc:elseif={cell.isCurrency}>                                    
+                                    <lightning-formatted-number value={cell.value} 
+                                        format-style="currency" 
+                                        currency-code="BRL" 
+                                        currency-display-as="code">                                        
+                                    </lightning-formatted-number>
+                                </template>
+                                <template lwc:elseif={cell.isNumber}>                                    
+                                    <lightning-formatted-number value={cell.value}></lightning-formatted-number>
+                                </template>
+                                <template lwc:else>
+                                    {cell.value}
+                                </template>
+                            </td>
+                        </template>
+                    </tr>
+                    <!-- Tabela de Itens (expandida) -->
+                    <template if:true={parentRecord.isExpanded}>
+                        <tr key={parentRecord.expanded} class="slds-hint-parent">
+                            <td class="vertical-line" colspan={parentColumns.length}>
+                                <div class="slds-p-top_large slds-p-bottom_large">
+                                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                        <thead>                                            
+                                            <template for:each={childColumns} for:item="column">
+                                                <th key={column.fieldName} scope="col">
+                                                    {column.label}
+                                                </th>
+                                            </template>                                        
+                                        </thead>                                                                              
+                                        <tbody>                                            
+                                            <template for:each={parentRecord.processedChildren} for:item="childRecord">
+                                                <tr key={childRecord.id}>
+                                                    <template for:each={childRecord.cells} for:item="cell">
+                                                        <!-- Campos dos Itens (expandida) -->
+                                                        <td key={cell.fieldName} data-label={cell.label}>                                                            
+                                                            <template lwc:if={cell.isDate}>                                    
+                                                                <lightning-formatted-date-time value={cell.value} year="numeric" month="2-digit" day="2-digit">
+                                                                </lightning-formatted-date-time>
+                                                            </template>
+                                                            <template lwc:elseif={cell.isCurrency}>                                    
+                                                                <lightning-formatted-number value={cell.value} 
+                                                                    format-style="currency" 
+                                                                    currency-code="BRL" 
+                                                                    currency-display-as="code">                                        
+                                                                </lightning-formatted-number>
+                                                            </template>
+                                                            <template lwc:else>
+                                                                {cell.value}
+                                                            </template>
+                                                        </td>
+                                                    </template>
+                                                </tr>
+                                            </template>
+                                        </tbody>                                        
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                </template>
+            </tbody>
+        </table>
+    </div>
+</template>
