@@ -12,8 +12,8 @@
                 <template for:each={processedRecords} for:item="parentRecord">
                     <tr key={parentRecord.id} >                        
                         <template for:each={parentRecord.cells} for:item="cell">
-                            <td key={cell.fieldName}>
-                                <template lwc:if={cell.firstField}>
+                            <template lwc:if={cell.firstField}>
+                                <td key={cell.fieldName} class="slds-p-left_none">
                                     <template lwc:if={parentRecord.children}>
                                         <lightning-button-icon 
                                             class="slds-p-left_x-small"
@@ -25,25 +25,30 @@
                                         >
                                         </lightning-button-icon>
                                     </template>
-                                </template>
-                                <template lwc:if={cell.isDate}>                                    
-                                    <lightning-formatted-date-time value={cell.value} year="numeric" month="2-digit" day="2-digit">
-                                    </lightning-formatted-date-time>
-                                </template>
-                                <template lwc:elseif={cell.isCurrency}>                                    
-                                    <lightning-formatted-number value={cell.value} 
-                                        format-style="currency" 
-                                        currency-code="BRL" 
-                                        currency-display-as="code">                                        
-                                    </lightning-formatted-number>
-                                </template>
-                                <template lwc:elseif={cell.isNumber}>                                    
-                                    <lightning-formatted-number value={cell.value}></lightning-formatted-number>
-                                </template>
-                                <template lwc:else>
                                     {cell.value}
-                                </template>
-                            </td>
+                                </td>
+                            </template>
+                            <template lwc:else>
+                                <td key={cell.fieldName} >
+                                    <template lwc:if={cell.isDate}>                                    
+                                        <lightning-formatted-date-time value={cell.value} year="numeric" month="2-digit" day="2-digit">
+                                        </lightning-formatted-date-time>
+                                    </template>
+                                    <template lwc:elseif={cell.isCurrency}>                                    
+                                        <lightning-formatted-number value={cell.value} 
+                                            format-style="currency" 
+                                            currency-code="BRL" 
+                                            currency-display-as="code">                                        
+                                        </lightning-formatted-number>
+                                    </template>
+                                    <template lwc:elseif={cell.isNumber}>                                    
+                                        <lightning-formatted-number value={cell.value}></lightning-formatted-number>
+                                    </template>
+                                    <template lwc:else>
+                                        {cell.value}
+                                    </template>
+                                </td>
+                            </template>    
                         </template>
                     </tr>
                     <!-- Tabela de Itens (expandida) -->
