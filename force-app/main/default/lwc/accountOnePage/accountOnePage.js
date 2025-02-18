@@ -26,7 +26,14 @@ export default class AccountOnePage extends LightningElement {
         log(msg);
     }
 
-    @track records = itensPedido();
-    columns = colunasItem();
-    columnsChildren = colunasNota();
+    @track mainRecords = { 
+        columns: colunasPedido(),
+        data: pedidos() 
+    } ;
+    
+    
+    firstLevelColumns = {
+        parent: colunasItemMae(),
+        child: colunasItem(),
+    }
 }

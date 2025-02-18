@@ -1,10 +1,7 @@
 
 export function itensPedido() {
     return [
-        {
-            isExpanded : false,
-            expanded: `expanded-1`,
-            icon: 'utility:chevronright',
+        {            
             id: 1,
             produto: 'PRODUTO 1',
             quantidade: 1200,
@@ -35,10 +32,7 @@ export function itensPedido() {
                 },
             ]           
         },
-        {         
-            isExpanded : false,
-            expanded: `expanded-5`,
-            icon: 'utility:chevronright',   
+        {                                            
             id: 5,
             produto: 'PRODUTO 2',
             quantidade: 2000,
@@ -91,6 +85,19 @@ export function colunasItem(){
     ];    
 }
 
+export function colunasItemMae(){
+    return [
+            {label: 'Produto', fieldName: 'produto', type: 'text'},
+            {label: 'Quantidade', fieldName: 'quantidade', type: 'number'},
+            {label: 'Qtd. Desmembrada', fieldName: 'qtdDesmembrada', type: 'number'},
+            {label: 'Saldo a Desmembrar', fieldName: 'saldoDesmembrar', type: 'number'},
+            {label: 'Cadencia Entrega', fieldName: 'cadenciaEntrada', type: 'text'},
+            {label: 'Valor', fieldName: 'valor', type: 'currency'},            
+            {label: 'Status', fieldName: 'status', type: 'text'}     
+    ];    
+}
+
+
 export function colunasNota(){
     return [                
         {label: 'Número', fieldName: 'numero', type: 'text'},
@@ -102,28 +109,96 @@ export function colunasNota(){
 
 export function colunasPedido(){
     return [
-        {label: 'Número', fieldName: 'numero', type: 'text'},
-        {label: 'Emissão', fieldName: 'emissao', type: 'date'},
+        {label: 'Pedido', fieldName: 'numero', type: 'text'},        
+        {label: 'Tipo de Pedido', fieldName: 'tipo', type: 'text'},        
+        {label: 'Tipo de Pgto', fieldName: 'tipo', type: 'text'},        
         {label: 'Valor', fieldName: 'valor', type: 'currency'},        
+        {label: 'Pagamento', fieldName: 'pagamento', type: 'text'},        
+        {label: 'Status', fieldName: 'status', type: 'text'},        
+    ]
+}
+
+export function colunasPedidoMae(){
+    return [
+        {label: 'Pedido', fieldName: 'numero', type: 'text'},        
+        {label: 'Tipo de Pedido', fieldName: 'tipo', type: 'text'},        
+        {label: 'Tipo de Pgto', fieldName: 'tipo', type: 'text'},        
+        {label: 'Valor', fieldName: 'valor', type: 'currency'},        
+        {label: 'Pagamento', fieldName: 'pagamento', type: 'text'},        
+        {label: 'Status', fieldName: 'status', type: 'text'},        
     ]
 }
 
 
 export function pedidos() {
+    return [...pedidosMae(),        
+        {                        
+            id: 1,            
+            numero: '123',            
+            valor: 7500,        
+            tipo: 'Normal',
+            tipoPgto: 'Cash',
+            pagamento: '30 DDL',
+            status: 'Aprovado',
+            children : { 
+                columns: colunasItem(),
+                data: itensPedido()            
+            }
+        }        
+    ];
+}
+
+export function pedidosFilho() {
     return [
         {                        
             id: 1,            
             numero: '123',
             emissao: '2025-12-31',
             valor: 7500,            
+            tipo: 'Filho',
             children : itensPedido(),            
         },
         {                        
             id: 2,            
             numero: '3333',
             emissao: '2025-12-31',
+            tipo: 'Filho',
             valor: 75000,            
             children : itensPedido()
+        }
+    ];
+}
+
+export function pedidosMae() {
+    return [
+        {
+            id: 100,            
+            numero: '0123',            
+            valor: 7500,            
+            tipo: 'Mae',
+            tipoPgto: 'Cash',
+            pagamento: '30 DDL',
+            status: 'Aprovado',            
+            children : { 
+                columns: colunasItemMae(),
+                data: itensPedidoMae()            
+            }           
+        }
+    ]
+}
+
+export function itensPedidoMae(){
+    return [
+        {            
+            id: 110,
+            produto: 'PRODUTO 3',
+            quantidade: 1200,
+            qtdDesmembrada: 0,
+            saldoDesmembrar: 0,
+            cadenciaEntrada: '12/08/2024 - 12/09/2024',
+            valor: 7500,            
+            status: 'Pendente',
+            children: []            
         }
     ];
 }

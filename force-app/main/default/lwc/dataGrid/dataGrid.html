@@ -2,25 +2,25 @@
     <div class="slds-table slds-table_bordered slds-table_cell-buffer">        
         <table class="slds-table slds-table_bordered">
             <thead>                
-                <template for:each={parentColumns} for:item="column">
+                <template for:each={mainRecords.columns} for:item="column">
                     <th key={column.fieldName} scope="col">
                         {column.label}
                     </th>
                 </template>                                    
             </thead>
             <tbody>
-                <template for:each={processedRecords} for:item="parentRecord">
-                    <tr key={parentRecord.id} >                        
-                        <template for:each={parentRecord.cells} for:item="cell">
+                <template for:each={processedMainRecords} for:item="mainRecord">
+                    <tr key={mainRecord.id} >                        
+                        <template for:each={mainRecord.cells} for:item="cell">
                             <template lwc:if={cell.firstField}>
                                 <td key={cell.fieldName} class="slds-p-left_none">
-                                    <template lwc:if={parentRecord.children}>
+                                    <template lwc:if={mainRecord.children}>
                                         <lightning-button-icon 
                                             class="slds-p-left_x-small"
-                                            icon-name={parentRecord.icon}  
-                                            data-id = {parentRecord.id} 
+                                            icon-name={mainRecord.icon}  
+                                            data-id = {mainRecord.id} 
                                             variant="bare"
-                                            value={parentRecord}
+                                            value={mainRecord}
                                             onclick={handleExpand}
                                         >
                                         </lightning-button-icon>
@@ -51,24 +51,23 @@
                             </template>    
                         </template>
                     </tr>
-                    <!-- Tabela de Itens (expandida) -->
-                    <template if:true={parentRecord.isExpanded}>
-                        <tr key={parentRecord.expanded} class="slds-hint-parent">
-                            <td class="vertical-line" colspan={parentColumns.length}>
+                    <!-- Tabela de Itens ( first level expandida) -->
+                    <template if:true={mainRecord.isExpanded}>
+                        <tr key={mainRecord.expanded} class="slds-hint-parent">
+                            <td class="vertical-line" colspan={mainRecord.firstLevelColumns.length}>
                                 <div class="slds-p-top_large slds-p-bottom_large">
                                     <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                                         <thead>                                            
-                                            <template for:each={childColumns} for:item="column">
+                                            <template for:each={mainRecord.firstLevelColumns} for:item="column">
                                                 <th key={column.fieldName} scope="col">
                                                     {column.label}
                                                 </th>
                                             </template>                                        
                                         </thead>                                                                              
                                         <tbody>                                            
-                                            <template for:each={parentRecord.processedChildren} for:item="childRecord">
-                                                <tr key={childRecord.id}>
-                                                    <template for:each={childRecord.cells} for:item="cell">
-                                                        <!-- Campos dos Itens (expandida) -->
+                                            <template for:each={mainRecord.firstLevelRecords} for:item="levelOne">
+                                                <tr key={levelOne.id}>
+                                                    <template for:each={levelOne.cells} for:item="cell">                                                        
                                                         <td key={cell.fieldName} data-label={cell.label}>                                                            
                                                             <template lwc:if={cell.isDate}>                                    
                                                                 <lightning-formatted-date-time value={cell.value} year="numeric" month="2-digit" day="2-digit">
@@ -93,7 +92,7 @@
                                 </div>
                             </td>
                         </tr>
-                    </template>
+                    </template>                              
                 </template>
             </tbody>
         </table>
