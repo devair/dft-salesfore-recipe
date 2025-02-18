@@ -8,20 +8,20 @@
                     </th>
                 </template>                                    
             </thead>
-            <tbody>
+            <tbody>                
                 <template for:each={processedMainRecords} for:item="mainRecord">
                     <tr key={mainRecord.id} >                        
                         <template for:each={mainRecord.cells} for:item="cell">
                             <template lwc:if={cell.firstField}>
                                 <td key={cell.fieldName} class="slds-p-left_none">
-                                    <template lwc:if={mainRecord.children}>
+                                    <template lwc:if={mainRecord.firstLevelRecords}>
                                         <lightning-button-icon 
                                             class="slds-p-left_x-small"
                                             icon-name={mainRecord.icon}  
                                             data-id = {mainRecord.id} 
                                             variant="bare"
                                             value={mainRecord}
-                                            onclick={handleExpand}
+                                            onclick={handleExpandMainRecord}
                                         >
                                         </lightning-button-icon>
                                     </template>
@@ -67,25 +67,158 @@
                                         <tbody>                                            
                                             <template for:each={mainRecord.firstLevelRecords} for:item="levelOne">
                                                 <tr key={levelOne.id}>
-                                                    <template for:each={levelOne.cells} for:item="cell">                                                        
-                                                        <td key={cell.fieldName} data-label={cell.label}>                                                            
-                                                            <template lwc:if={cell.isDate}>                                    
-                                                                <lightning-formatted-date-time value={cell.value} year="numeric" month="2-digit" day="2-digit">
-                                                                </lightning-formatted-date-time>
-                                                            </template>
-                                                            <template lwc:elseif={cell.isCurrency}>                                    
-                                                                <lightning-formatted-number value={cell.value} 
-                                                                    format-style="currency" 
-                                                                    currency-code="BRL" 
-                                                                    currency-display-as="code">                                        
-                                                                </lightning-formatted-number>
-                                                            </template>
-                                                            <template lwc:else>
+                                                    <template for:each={levelOne.cells} for:item="cell">   
+                                                        <template lwc:if={cell.firstField}>
+                                                            <td key={cell.fieldName} class="slds-p-left_none">
+                                                                
+                                                                <template lwc:if={levelOne.secondLevelRecords}>
+                                                                    <lightning-button-icon 
+                                                                        class="slds-p-left_x-small"
+                                                                        icon-name={levelOne.icon}  
+                                                                        data-id = {levelOne.id} 
+                                                                        variant="bare"
+                                                                        value={levelOne.expanded}
+                                                                        onclick={handleExpandLevelOne}
+                                                                    >
+                                                                    </lightning-button-icon>
+                                                                </template>
                                                                 {cell.value}
-                                                            </template>
-                                                        </td>
+                                                            </td>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            <td key={cell.fieldName} data-label={cell.label}>                                                            
+                                                                <template lwc:if={cell.isDate}>                                    
+                                                                    <lightning-formatted-date-time value={cell.value} year="numeric" month="2-digit" day="2-digit">
+                                                                    </lightning-formatted-date-time>
+                                                                </template>
+                                                                <template lwc:elseif={cell.isCurrency}>                                    
+                                                                    <lightning-formatted-number value={cell.value} 
+                                                                        format-style="currency" 
+                                                                        currency-code="BRL" 
+                                                                        currency-display-as="code">                                        
+                                                                    </lightning-formatted-number>
+                                                                </template>
+                                                                <template lwc:else>
+                                                                    {cell.value}
+                                                                </template>
+                                                            </td>
+                                                        </template>                                                     
                                                     </template>
                                                 </tr>
+                                                <!-- Tabela de Itens ( second level expandida) -->
+                                                <template if:true={levelOne.isExpanded}>
+                                                    <tr key={levelOne.expanded} class="slds-hint-parent">
+                                                        <td class="vertical-line" colspan={levelOne.secondLevelColumns.length}>
+                                                            <div class="slds-p-top_large slds-p-bottom_large">
+                                                                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                                                    <thead>                                            
+                                                                        <template for:each={levelOne.secondLevelColumns} for:item="column">
+                                                                            <th key={column.fieldName} scope="col">
+                                                                                {column.label}
+                                                                            </th>
+                                                                        </template>                                        
+                                                                    </thead>                                                                              
+                                                                    <tbody>                                            
+                                                                        <template for:each={levelOne.secondLevelRecords} for:item="levelTwo">
+                                                                            <tr key={levelTwo.id}>
+                                                                                <template for:each={levelTwo.cells} for:item="cell">   
+                                                                                    
+                                                                                    <template lwc:if={cell.firstField}>
+                                                                                        <td key={cell.fieldName} class="slds-p-left_none">                                                                                            
+                                                                                            <template lwc:if={levelTwo.thirdLevelRecords}>
+                                                                                                <lightning-button-icon 
+                                                                                                    class="slds-p-left_x-small"
+                                                                                                    icon-name={levelTwo.icon}  
+                                                                                                    data-id = {levelTwo.id} 
+                                                                                                    variant="bare"
+                                                                                                    value={levelTwo.expanded}
+                                                                                                    onclick={handleExpandLevelTwo}
+                                                                                                >
+                                                                                                </lightning-button-icon>
+                                                                                            </template>
+                                                                                            {cell.value}
+                                                                                        </td>
+                                                                                    </template>
+
+                                                                                    <template lwc:else>    
+                                                                                        <td key={cell.fieldName} data-label={cell.label}>                                                            
+                                                                                            <template lwc:if={cell.isDate}>                                    
+                                                                                                <lightning-formatted-date-time value={cell.value} year="numeric" month="2-digit" day="2-digit">
+                                                                                                </lightning-formatted-date-time>
+                                                                                            </template>
+                                                                                            <template lwc:elseif={cell.isCurrency}>                                    
+                                                                                                <lightning-formatted-number value={cell.value} 
+                                                                                                    format-style="currency" 
+                                                                                                    currency-code="BRL" 
+                                                                                                    currency-display-as="code">                                        
+                                                                                                </lightning-formatted-number>
+                                                                                            </template>
+                                                                                            <template lwc:else>
+                                                                                                {cell.value}
+                                                                                            </template>
+                                                                                        </td>
+                                                                                    </template>
+                                                                                </template>
+                                                                            </tr>
+
+                                                                            <!-- Tabela de Itens ( third level expandida) -->
+                                                                            <template if:true={levelTwo.isExpanded}>
+                                                                                <tr key={levelTwo.expanded} class="slds-hint-parent">
+                                                                                    <td class="vertical-line" colspan={levelTwo.thirdLevelColumns.length}>
+                                                                                        <div class="slds-p-top_large slds-p-bottom_large">
+                                                                                            <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                                                                                <thead>                                            
+                                                                                                    <template for:each={levelTwo.thirdLevelColumns} for:item="column">
+                                                                                                        <th key={column.fieldName} scope="col">
+                                                                                                            {column.label}
+                                                                                                        </th>
+                                                                                                    </template>                                        
+                                                                                                </thead>
+                                                                                                <tbody>                                            
+                                                                                                    <template for:each={levelTwo.thirdLevelRecords} for:item="levelThree">
+                                                                                                        <tr key={levelTwo.id}>
+                                                                                                            <template for:each={levelThree.cells} for:item="cell">   
+                                                                                                                
+                                                                                                                <template lwc:if={cell.firstField}>
+                                                                                                                    <td key={cell.fieldName} class="slds-p-left_none">                                                                                                                       
+                                                                                                                        {cell.value}
+                                                                                                                    </td>
+                                                                                                                </template>
+                            
+                                                                                                                <template lwc:else>    
+                                                                                                                    <td key={cell.fieldName} data-label={cell.label}>                                                            
+                                                                                                                        <template lwc:if={cell.isDate}>                                    
+                                                                                                                            <lightning-formatted-date-time value={cell.value} year="numeric" month="2-digit" day="2-digit">
+                                                                                                                            </lightning-formatted-date-time>
+                                                                                                                        </template>
+                                                                                                                        <template lwc:elseif={cell.isCurrency}>                                    
+                                                                                                                            <lightning-formatted-number value={cell.value} 
+                                                                                                                                format-style="currency" 
+                                                                                                                                currency-code="BRL" 
+                                                                                                                                currency-display-as="code">                                        
+                                                                                                                            </lightning-formatted-number>
+                                                                                                                        </template>
+                                                                                                                        <template lwc:else>
+                                                                                                                            {cell.value}
+                                                                                                                        </template>
+                                                                                                                    </td>
+                                                                                                                </template>
+                                                                                                            </template>
+                                                                                                        </tr>
+                                                                                                    </template>
+                                                                                                </tbody>
+                                                                                            </table>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </template>
+                                                                        </template>
+                                                                    </tbody>                                        
+                                                                </table>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </template>
                                             </template>
                                         </tbody>                                        
                                     </table>

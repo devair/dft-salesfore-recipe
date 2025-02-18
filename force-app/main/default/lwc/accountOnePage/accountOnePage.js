@@ -1,6 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
 import { log } from 'lightning/logger';
-import { pedidos, colunasPedido, colunasItem, itensPedido, colunasNota} from './dataSamples';
+import { pedidos, colunasPedido, colunasItemMae, colunasPedidoFilhoMae, colunasNfItemMae  } from './dataSamples';
 
 export default class AccountOnePage extends LightningElement {
 
@@ -34,6 +34,16 @@ export default class AccountOnePage extends LightningElement {
     
     firstLevelColumns = {
         parent: colunasItemMae(),
-        child: colunasItem(),
+        child: colunasItemMae(),
+    }
+
+    secondLevelColumns = {
+        parent: colunasPedidoFilhoMae(),
+        child: colunasPedidoFilhoMae(),
+    };
+    
+    thirdLevelColumns = {
+        parent: colunasNfItemMae(),
+        child: colunasNfItemMae(),
     }
 }

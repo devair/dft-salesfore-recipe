@@ -19,8 +19,8 @@ export default class DataGrid extends LightningElement {
     }
 
     processRecords(mainObject) {
-        const columns = mainObject.columns;
-        const records = mainObject.data;
+        const columns = mainObject?.columns;
+        const records = mainObject?.data;
 
         return records.map(record => {
             // Mapeia as células para cada pedido (nível 1)
@@ -36,17 +36,16 @@ export default class DataGrid extends LightningElement {
                 };
             });
 
-            console.table(cells);
-
             // Mapeia os itens filhos (nível 2)
             let processedFirstLevel;
-            if(record.children){
-                const columns = record.children.columns;
-                const records = record.children.data;
+            if(record?.children){
+                const columns = record?.children?.columns;
+                const records = record?.children?.data;
 
                 processedFirstLevel = records.map(levelOneChild => {                
-                    const childCells = columns.map(column => {
+                    const childCells = columns.map((column,index) => {
                         return {
+                            firstField: index === 0, 
                             fieldName: column.fieldName,
                             label: column.label,
                             value: levelOneChild[column.fieldName] || '', // Valor da célula
@@ -58,11 +57,16 @@ export default class DataGrid extends LightningElement {
 
                     // Mapeia as notas (nível 3)                     
                     let processedSecondLevel;
-                    /*
-                    if(levelOneChild.children){
-                        processedSecondLevel = levelOneChild.children.map(levelTwoChild => {
-                            const levelTwoChildCells = this.secondLevelColumns.map(column => {
+                    
+                    if(levelOneChild?.children){
+                        const columns = levelOneChild?.children?.columns;
+                        const records = levelOneChild?.children?.data;
+
+                     
+                        processedSecondLevel = records.map(levelTwoChild => {
+                            const levelTwoChildCells = columns.map((column,index) => {
                                 return {
+                                    firstField: index === 0, 
                                     fieldName: column.fieldName,
                                     label: column.label,
                                     value: levelTwoChild[column.fieldName] || '', // Valor da célula
@@ -74,10 +78,15 @@ export default class DataGrid extends LightningElement {
 
                             // Mapeia as notas (nível 4)
                             let processedThirdLevel;
-                            if(levelTwoChild.children){
-                                processedThirdLevel = levelTwoChild.children.map(levelThreeChild => {
-                                    const levelThreeChildCells = this.thirdLevelColumns.map(column => {
+                            
+                            if(levelTwoChild?.children){
+                                const columns = levelTwoChild?.children?.columns;
+                                const records = levelTwoChild?.children?.data;
+
+                                processedThirdLevel = records.map(levelThreeChild => {
+                                    const levelThreeChildCells = columns.map((column,index) => {
                                         return {
+                                            firstField: index === 0, 
                                             fieldName: column.fieldName,
                                             label: column.label,
                                             value: levelThreeChild[column.fieldName] || '', // Valor da célula
@@ -88,31 +97,29 @@ export default class DataGrid extends LightningElement {
                                     });
                                     return {
                                         id: levelThreeChild.id,
-                                        cells: levelThreeChildCells,
-                                        columns: this.thirdLevelColumns
+                                        cells: levelThreeChildCells                                        
                                     };
                                 });
                             }
-
+                            
                             return {
                                 id: levelTwoChild.id,
                                 cells: levelTwoChildCells,
                                 expanded: `expanded-two-${levelTwoChild.id}`,
-                                processedThirdLevel,
-                                thirdLevelColumns: this.thirdLevelColumns,
+                                thirdLevelRecords: processedThirdLevel,
+                                thirdLevelColumns: levelTwoChild?.levelType === 'itemMae' ? this.thirdLevelColumns.parent : this.thirdLevelColumns.child,
                                 isExpanded: false, // Estado de expansão
-                                icon: 'utility:chevronright',
-                                columns: this.secondLevelColumns
+                                icon: 'utility:chevronright',                                
                             };
-                        });
+                        });                    
                     }
-                    */
+                    
                     return {
                         id: levelOneChild.id,
                         cells: childCells,
                         expanded: `expanded-one-${levelOneChild.id}`,
-                        processedSecondLevel,
-                        secondLevelColumns: this.secondLevelColumns,
+                        secondLevelRecords: processedSecondLevel,
+                        secondLevelColumns: levelOneChild?.levelType === 'itemMae' ? this.secondLevelColumns.parent : this.secondLevelColumns.child,
                         isExpanded: false, // Estado de expansão
                         icon: 'utility:chevronright',                         
                     };
@@ -122,30 +129,74 @@ export default class DataGrid extends LightningElement {
             return {
                 ...record,
                 cells, // Células do pedido
-                expanded: `expanded-${record.id}`,                
+                expanded: `expanded-${record.id}`,                                
                 firstLevelRecords: processedFirstLevel, // Itens filhos processados
-                firstLevelColumns: record.tipo === 'Mae' ? this.firstLevelColumns.parent : this.firstLevelColumns.child ,
+                firstLevelColumns: record?.levelType === 'itemMae' ? this.firstLevelColumns.parent : this.firstLevelColumns.child ,
                 isExpanded: false, // Estado de expansão
                 icon: 'utility:chevronright',
             };
         });
     }
 
-    handleExpand(event) {
+    handleExpandMainRecord(event) {
         const recordId = parseInt(event.currentTarget.dataset.id, 10);
         const record = this.processedMainRecords.find(record => record.id === recordId);
 
         if (record) {
-            const isExpanded = record.icon === 'utility:chevrondown';            
-            record.icon = isExpanded ? 'utility:chevronright': 'utility:chevrondown',
-            record.isExpanded = !isExpanded;
-            
-            if (!isExpanded) {
-                this.expandedItems = [ ... this.expandedItems, record.id];
-            }                
-            else {                
-                this.expandedItems = this.expandedItems.filter(id => id !== record.id);
-            }                       
+            this.changeElement(record);                    
         }
+    }
+
+    handleExpandLevelOne(event) {
+        const recordId = parseInt(event.currentTarget.dataset.id, 10);
+    
+        // Percorre os registros principais para encontrar o registro correspondente
+        this.processedMainRecords.forEach(mainRecord => {
+            if (mainRecord.firstLevelRecords) {
+                // Procura o registro de nível 2 (first level) dentro do registro principal
+                const levelOneRecord = mainRecord.firstLevelRecords.find(record => record.id === recordId);
+    
+                if (levelOneRecord) {
+                    this.changeElement(levelOneRecord);
+                }
+            }
+        });
+    }
+
+    handleExpandLevelTwo(event) {
+        const recordId = parseInt(event.currentTarget.dataset.id, 10);
+    
+        // Percorre os registros principais para encontrar o registro correspondente
+        this.processedMainRecords.forEach(mainRecord => {
+            if (mainRecord.firstLevelRecords) {
+                // Percorre os registros de nível 2 (first level)
+                mainRecord.firstLevelRecords.forEach(levelOneRecord => {
+                    if (levelOneRecord.secondLevelRecords) {
+                        // Procura o registro de nível 3 (second level) dentro do registro de nível 2
+                        const levelTwoRecord = levelOneRecord.secondLevelRecords.find(record => record.id === recordId);
+    
+                        if (levelTwoRecord) {
+                            this.changeElement(levelTwoRecord);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    changeElement(elem){
+        // Alterna o estado de expansão e o ícone
+        const isExpanded = elem.icon === 'utility:chevrondown';
+        elem.icon = isExpanded ? 'utility:chevronright' : 'utility:chevrondown';
+        elem.isExpanded = !isExpanded;
+
+        // Atualiza a lista de itens expandidos
+        if (!isExpanded) {
+            this.expandedItems = [...this.expandedItems, elem.id];
+        } else {
+            this.expandedItems = this.expandedItems.filter(id => id !== elem.id);
+        }
+
+        return elem;
     }
 }
