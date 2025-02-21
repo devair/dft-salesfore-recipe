@@ -10,7 +10,7 @@
         </thead>
         <tbody>
             <template for:each={records} for:item="record">                                
-                <tr key={record.produto} data-id={record.id}>                                                                                            
+                <tr key={record.id} data-id={record.id}>                                                                                            
                     <td class="slds-p-left_none">
                         <template lwc:if={record.children}>
                             <lightning-button-icon 
@@ -27,7 +27,7 @@
                     </td>
                     <td>{record.quantidade}</td>
                     <td>{record.qtdFaturada}</td>
-                    <td>{record.qtdDisponível}</td>
+                    <td>{record.qtdDisponivel}</td>
                     <td>
                         <lightning-formatted-date-time value={record.entrega} year="numeric" month="2-digit" day="2-digit">                            
                         </lightning-formatted-date-time>                        
