@@ -2,26 +2,26 @@
     <div class="slds-table slds-table_bordered slds-table_cell-buffer">        
         <table class="slds-table slds-table_bordered">
             <thead>                
-                <template for:each={mainRecords.columns} for:item="column">
+                <template for:each={processedMainRecords.columns} for:item="column">
                     <th key={column.fieldName} scope="col">
                         {column.label}
                     </th>
                 </template>                                    
             </thead>
             <tbody>                
-                <template for:each={processedMainRecords} for:item="mainRecord">
-                    <tr key={mainRecord.id} >                        
-                        <template for:each={mainRecord.cells} for:item="cell">
+                <template for:each={processedMainRecords.data} for:item="recordLevelOne">
+                    <tr key={recordLevelOne.id} >                        
+                        <template for:each={recordLevelOne.cells} for:item="cell">
                             <template lwc:if={cell.firstField}>
                                 <td key={cell.fieldName} class="slds-p-left_none">
-                                    <template lwc:if={mainRecord.firstLevelRecords}>
+                                    <template lwc:if={recordLevelOne.hasChildren}>
                                         <lightning-button-icon 
                                             class="slds-p-left_x-small"
-                                            icon-name={mainRecord.icon}  
-                                            data-id = {mainRecord.id} 
+                                            icon-name={recordLevelOne.icon}  
+                                            data-id = {recordLevelOne.id} 
                                             variant="bare"
-                                            value={mainRecord}
-                                            onclick={handleExpandMainRecord}
+                                            value={recordLevelOne}
+                                            onclick={handleExpandLevelOne}
                                         >
                                         </lightning-button-icon>
                                     </template>
@@ -52,33 +52,33 @@
                         </template>
                     </tr>
                     <!-- Tabela de Itens ( first level expandida) -->
-                    <template if:true={mainRecord.isExpanded}>
-                        <tr key={mainRecord.expanded} class="slds-hint-parent">
-                            <td class="vertical-line" colspan={mainRecord.firstLevelColumns.length}>
+                    <template if:true={recordLevelOne.isExpanded}>
+                        <tr key={recordLevelOne.expanded} class="slds-hint-parent">
+                            <td class="vertical-line" colspan={recordLevelOne.children.columns.length}>
                                 <div class="slds-p-top_large slds-p-bottom_large">
                                     <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                                         <thead>                                            
-                                            <template for:each={mainRecord.firstLevelColumns} for:item="column">
+                                            <template for:each={recordLevelOne.children.columns} for:item="column">
                                                 <th key={column.fieldName} scope="col">
                                                     {column.label}
                                                 </th>
                                             </template>                                        
                                         </thead>                                                                              
                                         <tbody>                                            
-                                            <template for:each={mainRecord.firstLevelRecords} for:item="levelOne">
-                                                <tr key={levelOne.id}>
-                                                    <template for:each={levelOne.cells} for:item="cell">   
+                                            <template for:each={recordLevelOne.children.data} for:item="recordLevelTwo">
+                                                <tr key={recordLevelTwo.id}>
+                                                    <template for:each={recordLevelTwo.cells} for:item="cell">   
                                                         <template lwc:if={cell.firstField}>
                                                             <td key={cell.fieldName} class="slds-p-left_none">
                                                                 
-                                                                <template lwc:if={levelOne.secondLevelRecords}>
+                                                                <template lwc:if={recordLevelTwo.hasChildren}>
                                                                     <lightning-button-icon 
                                                                         class="slds-p-left_x-small"
-                                                                        icon-name={levelOne.icon}  
-                                                                        data-id = {levelOne.id} 
+                                                                        icon-name={recordLevelTwo.icon}  
+                                                                        data-id = {recordLevelTwo.id} 
                                                                         variant="bare"
-                                                                        value={levelOne.expanded}
-                                                                        onclick={handleExpandLevelOne}
+                                                                        value={recordLevelTwo.expanded}
+                                                                        onclick={handleExpandLevelTwo}
                                                                     >
                                                                     </lightning-button-icon>
                                                                 </template>
@@ -106,33 +106,33 @@
                                                     </template>
                                                 </tr>
                                                 <!-- Tabela de Itens ( second level expandida) -->
-                                                <template if:true={levelOne.isExpanded}>
-                                                    <tr key={levelOne.expanded} class="slds-hint-parent">
-                                                        <td class="vertical-line" colspan={levelOne.secondLevelColumns.length}>
+                                                <template if:true={recordLevelTwo.isExpanded}>
+                                                    <tr key={recordLevelTwo.expanded} class="slds-hint-parent">
+                                                        <td class="vertical-line" colspan={recordLevelTwo.children.columns.length}>
                                                             <div class="slds-p-top_large slds-p-bottom_large">
                                                                 <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                                                                     <thead>                                            
-                                                                        <template for:each={levelOne.secondLevelColumns} for:item="column">
+                                                                        <template for:each={recordLevelTwo.children.columns} for:item="column">
                                                                             <th key={column.fieldName} scope="col">
                                                                                 {column.label}
                                                                             </th>
                                                                         </template>                                        
                                                                     </thead>                                                                              
                                                                     <tbody>                                            
-                                                                        <template for:each={levelOne.secondLevelRecords} for:item="levelTwo">
-                                                                            <tr key={levelTwo.id}>
-                                                                                <template for:each={levelTwo.cells} for:item="cell">   
+                                                                        <template for:each={recordLevelTwo.children.data} for:item="recordLevelThree">
+                                                                            <tr key={recordLevelThree.id}>
+                                                                                <template for:each={recordLevelThree.cells} for:item="cell">   
                                                                                     
                                                                                     <template lwc:if={cell.firstField}>
                                                                                         <td key={cell.fieldName} class="slds-p-left_none">                                                                                            
-                                                                                            <template lwc:if={levelTwo.thirdLevelRecords}>
+                                                                                            <template lwc:if={recordLevelThree.hasChildren}>
                                                                                                 <lightning-button-icon 
                                                                                                     class="slds-p-left_x-small"
-                                                                                                    icon-name={levelTwo.icon}  
-                                                                                                    data-id = {levelTwo.id} 
+                                                                                                    icon-name={recordLevelThree.icon}  
+                                                                                                    data-id = {recordLevelThree.id} 
                                                                                                     variant="bare"
-                                                                                                    value={levelTwo.expanded}
-                                                                                                    onclick={handleExpandLevelTwo}
+                                                                                                    value={recordLevelThree.expanded}
+                                                                                                    onclick={handleExpandLevelThree}
                                                                                                 >
                                                                                                 </lightning-button-icon>
                                                                                             </template>
@@ -162,22 +162,22 @@
                                                                             </tr>
 
                                                                             <!-- Tabela de Itens ( third level expandida) -->
-                                                                            <template if:true={levelTwo.isExpanded}>
-                                                                                <tr key={levelTwo.expanded} class="slds-hint-parent">
-                                                                                    <td class="vertical-line" colspan={levelTwo.thirdLevelColumns.length}>
+                                                                            <template if:true={recordLevelThree.isExpanded}>
+                                                                                <tr key={recordLevelThree.expanded} class="slds-hint-parent">
+                                                                                    <td class="vertical-line" colspan={recordLevelThree.children.columns.length}>
                                                                                         <div class="slds-p-top_large slds-p-bottom_large">
                                                                                             <table class="slds-table slds-table_bordered slds-table_cell-buffer">
                                                                                                 <thead>                                            
-                                                                                                    <template for:each={levelTwo.thirdLevelColumns} for:item="column">
+                                                                                                    <template for:each={recordLevelThree.children.columns} for:item="column">
                                                                                                         <th key={column.fieldName} scope="col">
                                                                                                             {column.label}
                                                                                                         </th>
                                                                                                     </template>                                        
                                                                                                 </thead>
                                                                                                 <tbody>                                            
-                                                                                                    <template for:each={levelTwo.thirdLevelRecords} for:item="levelThree">
-                                                                                                        <tr key={levelTwo.id}>
-                                                                                                            <template for:each={levelThree.cells} for:item="cell">   
+                                                                                                    <template for:each={recordLevelThree.children.data} for:item="recordLevelFour">
+                                                                                                        <tr key={recordLevelThree.id}>
+                                                                                                            <template for:each={recordLevelFour.cells} for:item="cell">   
                                                                                                                 
                                                                                                                 <template lwc:if={cell.firstField}>
                                                                                                                     <td key={cell.fieldName} class="slds-p-left_none">                                                                                                                       

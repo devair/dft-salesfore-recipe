@@ -1,23 +1,129 @@
 <template>
- 
-    <lightning-record-view-form
-            object-api-name={objectApiName}
-            record-id={recordId}                
-        >
+
+    <lightning-record-view-form object-api-name={objectApiName} record-id={recordId}>
         <c-account-one-page-header record-data={recordData}></c-account-one-page-header>
-    </lightning-record-view-form>    
+    </lightning-record-view-form>
 
-    <c-data-grid    
-        main-records = {mainRecords}
-        main-columns = {mainColumns}
-        first-level-columns = {firstLevelColumns}
-        second-level-columns = {secondLevelColumns}
-        third-level-columns = {thirdLevelColumns}
-    >
+    <div class="slds-p-top_small">
+        <lightning-card variant="base">
+            <div class="slds-p-left_small">
+                <lightning-tabset variant="">
+                    <lightning-tab label="Visão Geral">
+                        <div class="slds-p-left_xxx-small">
+                            <lightning-layout>
+                                <lightning-layout-item size="7" flexibility="auto" padding="around-small">
+                                    <div class="slds-box slds-p-around_medium slds-text-align_center">
+                                        <div>
+                                            <lightning-card>
+                                                <div class="slds-p-around_medium">
+                                                    <div
+                                                        class="slds-grid slds-wrap slds-border_bottom slds-p-bottom_medium">
+                                                        <div class="slds-col slds-size_1-of-4">
+                                                            <p class="slds-text-align_left slds-text-heading_small">Limite de Crédito</p>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-4">
+                                                            <p class="slds-text-align_left">Total <span>R$ 80.000,00</span></p>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-4">
+                                                            <p class="slds-text-align_left">Vencimento <span class="">14/12/2024</span></p>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-4">
+                                                            <p class="slds-text-align_left">Esgotamento <span class="">20%</span></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="slds-grid slds-wrap slds-p-top_medium">
+                                                        <div class="slds-col slds-size_1-of-4">
+                                                            <p class="slds-text-align_left slds-text-heading_small">Compromisso</p>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-4">
+                                                            <p class="slds-text-align_left">Total <span>R$ 40.000,00</span></p>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-4">
+                                                            <p class="slds-text-align_left">Faturado <span>R$ 40.000,00</span></p>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-4">
+                                                            <p class="slds-text-align_left">Carteira <span>R$ 40.000,00</span></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </lightning-card>
+                                        </div>
+                                    </div>
+                                </lightning-layout-item>
+                                <lightning-layout-item flexibility="auto" padding="around-small">
 
-    </c-data-grid>
-    
+                                    <!-- PRINCIPAIS CULTURAS -->
+                                    <div class="slds-box slds-p-around_xx-small">
+                                        <c-main-cultures-one-page></c-main-cultures-one-page>
+                                    </div>
+
+                                    <!-- CONCORRENTES -->
+                                    <div class="slds-box slds-p-around_xx-small">
+                                        <lightning-card title="Concorrentes" icon-name="standard:account">
+                                            <div class="slds-p-around_medium">
+                                                <lightning-layout multiple-rows>
+                                                    <!-- Fertilizantes -->
+                                                    <lightning-layout-item size="12">
+                                                        <h2 class="slds-text-heading_small slds-m-bottom_x-small">
+                                                            Fertilizantes</h2>
+                                                        <p>
+                                                            <strong>Yara Brasil</strong><br />
+                                                            Possui contratos vigentes até 2024.
+                                                        </p>
+                                                        <p class="slds-m-top_small">
+                                                            <strong>Fertipar</strong><br />
+                                                            Antigo fornecedor.
+                                                        </p>
+                                                    </lightning-layout-item>
+
+                                                    <lightning-layout-item size="12">
+                                                        <hr class="slds-m-vertical_medium" />
+                                                    </lightning-layout-item>
+
+                                                    <!-- Químicos -->
+                                                    <lightning-layout-item size="12">
+                                                        <h2 class="slds-text-heading_small slds-m-bottom_x-small">
+                                                            Químicos</h2>
+                                                        <p>
+                                                            <strong>Ihara</strong><br />
+                                                            Principal fornecedor.
+                                                        </p>
+                                                    </lightning-layout-item>
+
+                                                    <lightning-layout-item size="12">
+                                                        <hr class="slds-m-vertical_medium" />
+                                                    </lightning-layout-item>
+
+                                                    <!-- Sementes -->
+                                                    <lightning-layout-item size="12">
+                                                        <h2 class="slds-text-heading_small slds-m-bottom_x-small">
+                                                            Sementes</h2>
+                                                        <p>
+                                                            <strong>Cargil</strong><br />
+                                                            Realizou contratos em 2023.
+                                                        </p>
+                                                    </lightning-layout-item>
+                                                </lightning-layout>
+                                            </div>
+                                        </lightning-card>
+                                    </div>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </div>
+                    </lightning-tab>
+                    <lightning-tab label="Relacionamento">
+                        <div class="slds-p-around_small">
+                            Two Content !
+                        </div>
+                    </lightning-tab>
+                    <lightning-tab label="Vendas">
+                        <div class="slds-p-around_small">
+                            <c-data-grid main-records={mainRecords}>
+                            </c-data-grid>
+                        </div>
+                    </lightning-tab>
+                </lightning-tabset>
+            </div>
+        </lightning-card>
+    </div>
 </template>
-
-
-

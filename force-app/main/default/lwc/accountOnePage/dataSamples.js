@@ -2,7 +2,7 @@
 export function itensPedido() {
     return [
         {            
-            id: 1,
+            id: 11,
             produto: 'PRODUTO 1',
             quantidade: 1200,
             qtdFaturada: 1200,
@@ -13,11 +13,11 @@ export function itensPedido() {
             pagamento: '15 DDL',
             status: 'Faturado',
             children: {
-                columns: colunasNota() ,    
+                columns: colunasNfItemMae() ,    
                 data: [
                     { 
-                        id: 2,
-                        numero: '000000001-001',
+                        id: 222,                        
+                        serie: '000000001-001',
                         emissao: '2025-02-13',
                         valor: 2500
                     },           
@@ -83,16 +83,43 @@ export function colunasPedido(){
         {label: 'Fazenda', fieldName: 'fazenda', type: 'text'},        
         {label: 'Segmento', fieldName: 'segmento', type: 'text'},        
         {label: 'Tipo de Pedido', fieldName: 'tipo', type: 'text'},        
-        {label: 'Tipo de Pgto', fieldName: 'tipo', type: 'text'},        
+        {label: 'Tipo de Pgto', fieldName: 'tipoPgto', type: 'text'},        
         {label: 'Valor', fieldName: 'valor', type: 'currency'},        
         {label: 'Pagamento', fieldName: 'pagamento', type: 'text'},        
         {label: 'Status', fieldName: 'status', type: 'text'},        
     ]
 }
 
+
 export function pedidos(){
-    return [...pedidosMae() ]        
+    return {
+        data: [ ...pedidosMae(), ...pedidosNormal()],
+        columns: colunasPedido()
+    }
 }
+
+export function pedidosNormal(){
+    return [
+        {
+            id: 1010,            
+            numero: '4444',
+            fazenda: 'Fazenda',
+            segmento: 'Segmento',
+            tipo: 'Normal',
+            tipoPgto: 'Cash',
+            valor: 7500,            
+            pagamento: '30 DDL',
+            status: 'Aprovado', 
+            levelType : 'itemMae',           
+            children : { 
+                columns: colunasItem(),
+                data: itensPedido()            
+            }           
+        }
+     ]        
+}
+
+
 
 export function pedidosMae() {
     return [

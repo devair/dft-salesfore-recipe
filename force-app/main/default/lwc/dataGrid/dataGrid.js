@@ -2,189 +2,86 @@ import { LightningElement, api, track } from 'lwc';
 
 export default class DataGrid extends LightningElement {
     @api mainRecords = [];    
-    
-    @api firstLevelColumns = [];
-    @api secondLevelColumns = [];
-    @api thirdLevelColumns = [];
-
     @track processedMainRecords;
-    @track processedFirstLevel;
-    @track processedSecondLevel;
-    @track processedThirdLevel;
-
     expandedItems = [];
 
     connectedCallback() {        
-        this.processedMainRecords = this.processRecords(this.mainRecords);
+        this.processedMainRecords = this.processRecords(this.mainRecords.data, this.mainRecords.columns);
     }
 
-    processRecords(mainObject) {
-        const columns = mainObject?.columns;
-        const records = mainObject?.data;
+    processRecords(records, columns) {
 
-        return records.map(record => {
-            // Mapeia as células para cada pedido (nível 1)
-            const cells = columns.map((column, index) => {
-                return {
-                    firstField: index === 0, 
-                    fieldName: column.fieldName,
-                    label: column.label,
-                    value: record[column.fieldName] || '', // Valor da célula
-                    isDate: column.type ==='date', 
-                    isNumber: column.type ==='number', 
-                    isCurrency: column.type ==='currency'                    
-                };
-            });
-
-            // Mapeia os itens filhos (nível 2)
-            let processedFirstLevel;
-            if(record?.children){
-                const columns = record?.children?.columns;
-                const records = record?.children?.data;
-
-                processedFirstLevel = records.map(levelOneChild => {                
-                    const childCells = columns.map((column,index) => {
-                        return {
-                            firstField: index === 0, 
-                            fieldName: column.fieldName,
-                            label: column.label,
-                            value: levelOneChild[column.fieldName] || '', // Valor da célula
-                            isDate: column.type ==='date', 
-                            isNumber: column.type ==='number', 
-                            isCurrency: column.type ==='currency'
-                        };
-                    });
-
-                    // Mapeia as notas (nível 3)                     
-                    let processedSecondLevel;
-                    
-                    if(levelOneChild?.children){
-                        const columns = levelOneChild?.children?.columns;
-                        const records = levelOneChild?.children?.data;
-
-                     
-                        processedSecondLevel = records.map(levelTwoChild => {
-                            const levelTwoChildCells = columns.map((column,index) => {
-                                return {
-                                    firstField: index === 0, 
-                                    fieldName: column.fieldName,
-                                    label: column.label,
-                                    value: levelTwoChild[column.fieldName] || '', // Valor da célula
-                                    isDate: column.type ==='date', 
-                                    isNumber: column.type ==='number', 
-                                    isCurrency: column.type ==='currency'
-                                };
-                            });
-
-                            // Mapeia as notas (nível 4)
-                            let processedThirdLevel;
-                            
-                            if(levelTwoChild?.children){
-                                const columns = levelTwoChild?.children?.columns;
-                                const records = levelTwoChild?.children?.data;
-
-                                processedThirdLevel = records.map(levelThreeChild => {
-                                    const levelThreeChildCells = columns.map((column,index) => {
-                                        return {
-                                            firstField: index === 0, 
-                                            fieldName: column.fieldName,
-                                            label: column.label,
-                                            value: levelThreeChild[column.fieldName] || '', // Valor da célula
-                                            isDate: column.type ==='date', 
-                                            isNumber: column.type ==='number', 
-                                            isCurrency: column.type ==='currency'
-                                        };
-                                    });
-                                    return {
-                                        id: levelThreeChild.id,
-                                        cells: levelThreeChildCells                                        
-                                    };
-                                });
-                            }
-                            
-                            return {
-                                id: levelTwoChild.id,
-                                cells: levelTwoChildCells,
-                                expanded: `expanded-two-${levelTwoChild.id}`,
-                                thirdLevelRecords: processedThirdLevel,
-                                thirdLevelColumns: levelTwoChild?.levelType === 'itemMae' ? this.thirdLevelColumns.parent : this.thirdLevelColumns.child,
-                                isExpanded: false, // Estado de expansão
-                                icon: 'utility:chevronright',                                
-                            };
-                        });                    
-                    }
-                    
-                    return {
-                        id: levelOneChild.id,
-                        cells: childCells,
-                        expanded: `expanded-one-${levelOneChild.id}`,
-                        secondLevelRecords: processedSecondLevel,
-                        secondLevelColumns: levelOneChild?.levelType === 'itemMae' ? this.secondLevelColumns.parent : this.secondLevelColumns.child,
-                        isExpanded: false, // Estado de expansão
-                        icon: 'utility:chevronright',                         
-                    };
-                });
-            }
-
+        const data = records.map(record => {
+            const cells = columns.map((column, index) => ({
+                firstField: index === 0,
+                fieldName: column.fieldName,
+                label: column.label,
+                value: record[column.fieldName] || '',
+                isDate: column.type === 'date',
+                isNumber: column.type === 'number',
+                isCurrency: column.type === 'currency'
+            }));
+    
+            const processedChildren = (children) => {
+                return children ? this.processRecords(children.data, children.columns) : null;
+            };
+    
             return {
                 ...record,
-                cells, // Células do pedido
-                expanded: `expanded-${record.id}`,                                
-                firstLevelRecords: processedFirstLevel, // Itens filhos processados
-                firstLevelColumns: record?.levelType === 'itemMae' ? this.firstLevelColumns.parent : this.firstLevelColumns.child ,
-                isExpanded: false, // Estado de expansão
-                icon: 'utility:chevronright',
-            };
+                cells,                
+                expanded: `expanded-${record.id}`,
+                hasChildren: record?.children ? true : false,
+                children: processedChildren(record.children),                
+                isExpanded: false,
+                icon: 'utility:chevronright'
+            };            
         });
+
+        return {
+            columns: columns,
+            data: data
+        }
     }
 
-    handleExpandMainRecord(event) {
+   
+    handleExpand(event, level) {
         const recordId = parseInt(event.currentTarget.dataset.id, 10);
-        const record = this.processedMainRecords.find(record => record.id === recordId);
+
+        // Função recursiva para encontrar o registro
+        const findRecord = (records, targetId) => {
+            for (const record of records) {
+                if (record.id === targetId) {
+                    return record;
+                }
+                if (record.children?.data) {
+                    const found = findRecord(record.children.data, targetId);
+                    if (found) return found;
+                }
+            }
+            return null;
+        };
+
+        // Encontra o registro correspondente
+        const record = findRecord(this.processedMainRecords.data, recordId);
 
         if (record) {
-            this.changeElement(record);                    
+            this.changeElement(record);
         }
     }
 
     handleExpandLevelOne(event) {
-        const recordId = parseInt(event.currentTarget.dataset.id, 10);
-    
-        // Percorre os registros principais para encontrar o registro correspondente
-        this.processedMainRecords.forEach(mainRecord => {
-            if (mainRecord.firstLevelRecords) {
-                // Procura o registro de nível 2 (first level) dentro do registro principal
-                const levelOneRecord = mainRecord.firstLevelRecords.find(record => record.id === recordId);
-    
-                if (levelOneRecord) {
-                    this.changeElement(levelOneRecord);
-                }
-            }
-        });
+        this.handleExpand(event, 1);
     }
 
     handleExpandLevelTwo(event) {
-        const recordId = parseInt(event.currentTarget.dataset.id, 10);
-    
-        // Percorre os registros principais para encontrar o registro correspondente
-        this.processedMainRecords.forEach(mainRecord => {
-            if (mainRecord.firstLevelRecords) {
-                // Percorre os registros de nível 2 (first level)
-                mainRecord.firstLevelRecords.forEach(levelOneRecord => {
-                    if (levelOneRecord.secondLevelRecords) {
-                        // Procura o registro de nível 3 (second level) dentro do registro de nível 2
-                        const levelTwoRecord = levelOneRecord.secondLevelRecords.find(record => record.id === recordId);
-    
-                        if (levelTwoRecord) {
-                            this.changeElement(levelTwoRecord);
-                        }
-                    }
-                });
-            }
-        });
+        this.handleExpand(event, 2);
     }
 
-    changeElement(elem){
+    handleExpandLevelThree(event) {
+        this.handleExpand(event, 3);
+    }
+
+    changeElement(elem) {
         // Alterna o estado de expansão e o ícone
         const isExpanded = elem.icon === 'utility:chevrondown';
         elem.icon = isExpanded ? 'utility:chevronright' : 'utility:chevrondown';
