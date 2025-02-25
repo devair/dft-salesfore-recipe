@@ -61,7 +61,7 @@ export default class DataGrid extends LightningElement {
                 expanded: `expanded-${record.id}`,
                 hasChildren: hasChildren,
                 children: hasChildren? processedChildren(record.children) : undefined,                
-                isExpanded: expanded,
+                isExpanded: hasChildren && expanded ? true : false,
                 icon: 'utility:chevronright'
             };            
         });
