@@ -16,7 +16,7 @@ export default class DataGrid extends LightningElement {
 
     @api refreshData(expanded){        
 
-        if(this.mainRecords && this.mainRecords.data){
+        if(this.mainRecords && this.mainRecords.data && this.mainRecords.data.length > 0){
             this.showNoData = false;
             this.processedMainRecords = undefined;
             this.processedMainRecords = this.processRecords(this.mainRecords.data, this.mainRecords.columns, expanded);  
