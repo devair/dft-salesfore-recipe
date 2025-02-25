@@ -11,22 +11,23 @@ export default class DataGrid extends LightningElement {
 
     connectedCallback() {                
         
-        this.refreshData();
+        this.refreshData(false);
     }
 
-    @api refreshData(){
+    @api refreshData(expanded){        
+
         console.debug('Filho connectedCallback: ', JSON.stringify(this.mainRecords));          
         if(this.mainRecords && this.mainRecords.data){
             this.showNoData = false;
             this.processedMainRecords = undefined;
-            this.processedMainRecords = this.processRecords(this.mainRecords.data, this.mainRecords.columns);
+            this.processedMainRecords = this.processRecords(this.mainRecords.data, this.mainRecords.columns, expanded);
         }
         else{
             this.showNoData = true;
         }
     }
 
-    processRecords(records, columns) {
+    processRecords(records, columns, expanded) {
 
         console.debug('Custon Data Grid - Coluns', JSON.stringify(columns));
         console.debug('Custon Data Grid - Records', JSON.stringify(records))
@@ -64,7 +65,7 @@ export default class DataGrid extends LightningElement {
                 expanded: `expanded-${record.id}`,
                 hasChildren: hasChildren,
                 children: hasChildren? processedChildren(record.children) : undefined,                
-                isExpanded: false,
+                isExpanded: expanded,
                 icon: 'utility:chevronright'
             };            
         });
