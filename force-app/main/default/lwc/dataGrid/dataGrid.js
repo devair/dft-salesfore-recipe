@@ -21,6 +21,9 @@ export default class DataGrid extends LightningElement {
             this.processedMainRecords = undefined;
             this.processedMainRecords = this.processRecords(this.mainRecords.data, this.mainRecords.columns);
         }
+        else{
+            this.showNoData = true;
+        }
     }
 
     processRecords(records, columns) {
