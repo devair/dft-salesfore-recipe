@@ -16,11 +16,10 @@ export default class DataGrid extends LightningElement {
 
     @api refreshData(expanded){        
 
-        console.debug('Filho connectedCallback: ', JSON.stringify(this.mainRecords));          
         if(this.mainRecords && this.mainRecords.data){
             this.showNoData = false;
             this.processedMainRecords = undefined;
-            this.processedMainRecords = this.processRecords(this.mainRecords.data, this.mainRecords.columns, expanded);
+            this.processedMainRecords = this.processRecords(this.mainRecords.data, this.mainRecords.columns, expanded);  
         }
         else{
             this.showNoData = true;
@@ -28,9 +27,6 @@ export default class DataGrid extends LightningElement {
     }
 
     processRecords(records, columns, expanded) {
-
-        console.debug('Custon Data Grid - Coluns', JSON.stringify(columns));
-        console.debug('Custon Data Grid - Records', JSON.stringify(records))
 
         const data = records.map(record => {
             
@@ -57,7 +53,7 @@ export default class DataGrid extends LightningElement {
                 return children ? this.processRecords(children.data, children.columns) : null;
             };
     
-            const hasChildren = record.children ? true : false ;
+            const hasChildren = record?.children?.data && record?.children?.data.length > 0 ? true : false ;
 
             return {
                 ...record,
