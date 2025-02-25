@@ -1,17 +1,41 @@
 import { LightningElement, api, track } from 'lwc';
 
 export default class DataGrid extends LightningElement {
-    @api mainRecords = [];    
+    @api mainRecords;  
+    @api refresh;
+
     @track processedMainRecords;
     expandedItems = [];
 
-    connectedCallback() {        
-        this.processedMainRecords = this.processRecords(this.mainRecords.data, this.mainRecords.columns);
+    @track showNoData = true;
+
+    connectedCallback() {                
+        
+        this.refreshData();
+    }
+
+    @api refreshData(){
+        console.debug('Filho connectedCallback: ', JSON.stringify(this.mainRecords));          
+        if(this.mainRecords && this.mainRecords.data){
+            this.showNoData = false;
+            this.processedMainRecords = undefined;
+            this.processedMainRecords = this.processRecords(this.mainRecords.data, this.mainRecords.columns);
+        }
     }
 
     processRecords(records, columns) {
 
+        console.debug('Custon Data Grid - Coluns', JSON.stringify(columns));
+        console.debug('Custon Data Grid - Records', JSON.stringify(records))
+
         const data = records.map(record => {
+            
+            const urlLabel = (record, column) => {
+                const field = column?.typeAttributes?.label?.fieldName;
+                const value = field ? record[field]: '';
+                return value;
+            }
+
             const cells = columns.map((column, index) => ({
                 firstField: index === 0,
                 fieldName: column.fieldName,
@@ -19,19 +43,24 @@ export default class DataGrid extends LightningElement {
                 value: record[column.fieldName] || '',
                 isDate: column.type === 'date',
                 isNumber: column.type === 'number',
-                isCurrency: column.type === 'currency'
+                isCurrency: column.type === 'currency',
+                isUrl: column.type === 'url',
+                urlLabel: column.type === 'url' ? urlLabel(record, column) : ''                      
             }));
+            
     
             const processedChildren = (children) => {
                 return children ? this.processRecords(children.data, children.columns) : null;
             };
     
+            const hasChildren = record.children ? true : false ;
+
             return {
                 ...record,
                 cells,                
                 expanded: `expanded-${record.id}`,
-                hasChildren: record?.children ? true : false,
-                children: processedChildren(record.children),                
+                hasChildren: hasChildren,
+                children: hasChildren? processedChildren(record.children) : undefined,                
                 isExpanded: false,
                 icon: 'utility:chevronright'
             };            
@@ -45,7 +74,7 @@ export default class DataGrid extends LightningElement {
 
    
     handleExpand(event, level) {
-        const recordId = parseInt(event.currentTarget.dataset.id, 10);
+        const recordId = event.currentTarget.dataset.id;
 
         // Função recursiva para encontrar o registro
         const findRecord = (records, targetId) => {
