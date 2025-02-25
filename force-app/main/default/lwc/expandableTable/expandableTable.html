@@ -1,0 +1,18 @@
+<template>
+    <div class="slds-table slds-table_bordered slds-table_cell-buffer">        
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    <template for:each={columns} for:item="col">
+                        <th key={col.fieldName}>
+                            {col.label}
+                        </th>                        
+                    </template>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody lwc:dom="manual"></tbody>
+        </table>
+    </div>
+</template>
