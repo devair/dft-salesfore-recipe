@@ -49,7 +49,7 @@
                                         </td>
                                     </template>
                                     <template lwc:else>
-                                        <td key={cell.fieldName}>                                            
+                                        <td key={cell.fieldName}>                                                                                             
                                             <template lwc:if={cell.isUrl}>
                                                 <lightning-formatted-url 
                                                     value={cell.value} 
@@ -59,12 +59,20 @@
                                             </template> 
                                             <template lwc:else>
                                                 {cell.value}
-                                            </template>                                                                                                                 
+                                            </template>                                                                                                                          
                                         </td>
                                     </template>
                                 </template>
                                 <template lwc:else>
-                                    <td key={cell.fieldName} >                                           
+                                    <td key={cell.fieldName} >
+                                        <template lwc:if={cell.cellAttributes}>
+                                            <lightning-icon icon-name={cell.cellAttributes.iconName} 
+                                                    size="x-small"
+                                                    variant ={cell.cellAttributes.iconVariant}  
+                                                >
+                                            </lightning-icon>  
+                                        </template>
+                                        
                                         <template lwc:if={cell.isDate}>                                    
                                             <lightning-formatted-date-time value={cell.value} year="numeric" month="2-digit" day="2-digit">
                                             </lightning-formatted-date-time>
@@ -143,7 +151,14 @@
                                                                 </template>    
                                                             </template>
                                                             <template lwc:else>
-                                                                <td key={cell.fieldName} data-label={cell.label}>                                                            
+                                                                <td key={cell.fieldName} data-label={cell.label}>        
+                                                                    <template lwc:if={cell.cellAttributes}>
+                                                                        <lightning-icon icon-name={cell.cellAttributes.iconName} 
+                                                                                size="x-small"
+                                                                                variant ={cell.cellAttributes.iconVariant}  
+                                                                            >
+                                                                        </lightning-icon>  
+                                                                    </template>                                                    
                                                                     <template lwc:if={cell.isDate}>                                    
                                                                         <lightning-formatted-date-time value={cell.value} year="numeric" month="2-digit" day="2-digit">
                                                                         </lightning-formatted-date-time>

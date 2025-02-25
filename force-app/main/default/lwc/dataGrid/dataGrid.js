@@ -1,5 +1,5 @@
 import { LightningElement, api, track } from 'lwc';
-
+import { processCellAttributes } from './dataGridHelper';
 export default class DataGrid extends LightningElement {
     @api mainRecords;  
     @api refresh;
@@ -27,15 +27,13 @@ export default class DataGrid extends LightningElement {
     }
 
     processRecords(records, columns, expanded) {
+        const urlLabel = (record, column) => {
+            const field = column?.typeAttributes?.label?.fieldName;
+            const value = field ? record[field]: '';
+            return value;
+        }
 
-        const data = records.map(record => {
-            
-            const urlLabel = (record, column) => {
-                const field = column?.typeAttributes?.label?.fieldName;
-                const value = field ? record[field]: '';
-                return value;
-            }
-
+        const data = records.map(record => {            
             const cells = columns.map((column, index) => ({
                 firstField: index === 0,
                 fieldName: column.fieldName,
@@ -45,7 +43,8 @@ export default class DataGrid extends LightningElement {
                 isNumber: column.type === 'number',
                 isCurrency: column.type === 'currency',
                 isUrl: column.type === 'url',
-                urlLabel: column.type === 'url' ? urlLabel(record, column) : ''                      
+                urlLabel: column.type === 'url' ? urlLabel(record, column) : '',
+                cellAttributes: processCellAttributes(record, column)
             }));
             
     

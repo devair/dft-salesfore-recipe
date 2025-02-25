@@ -15,16 +15,14 @@ const COLUMNS = [
         } 
     },
     { label: 'Telefone', fieldName: 'phone', type: 'phone' },
-    { label: 'Status', fieldName: 'status', type: 'text' },
-    /*{ label: 'One Page', 
-        type: 'button', 
-        typeAttributes: { 
-            iconName: 'utility:company', 
-            name: 'onePage',
-            label: ''
-        },
-        cellAttributes: { class: { fieldName: 'buttonVisibility' } } // Controla visibilidade
-    }*/
+    { label: 'Status', fieldName: 'status', type: 'text',
+        cellAttributes: {
+            iconName: { fieldName: 'statusIcon'},
+            iconPosition: 'left',
+            iconVariant: { fieldName: 'statusIconVariant'}
+        } 
+    },
+    
 ];
 
 
@@ -93,7 +91,10 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
                     status: account.status,  
                     recordUrl: `/${account.id}`,
                     parentId: account.id,
-                    buttonVisibility: ''
+                    buttonVisibility: '',
+                    status: account.status,           
+                    statusIcon: 'utility:error',
+                    statusIconVariant: 'error'
                 }
 
                 const processedChildren = (children) => {
@@ -106,6 +107,9 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
                             status: child.status,
                             recordUrl: `/${child.id}`,
                             parentId: child.parentId,
+                            status: child.status,
+                            statusIcon: 'utility:success',
+                            statusIconVariant: 'success',
                             buttonVisibility: 'slds-hidden' // Esconde o botão para filhos
                         })                            
                     );
