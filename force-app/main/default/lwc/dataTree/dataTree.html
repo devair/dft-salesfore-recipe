@@ -33,6 +33,7 @@
             </div>
         </template>    
     </template>
+
     <template if:false={isMobile}>                           
         <lightning-card title="Grupos Econômicos" icon-name="standard:account">  
             <lightning-button-group slot="actions">                
@@ -42,15 +43,15 @@
                 >
                 </lightning-input>
             </lightning-button-group>     
-                                
-            <lightning-tree-grid class="lightning-tree-grid"
-                key-field="id"
-                columns={columns}
-                data={treeData}                        
-                hide-checkbox-column="true"
-                onrowaction={handleRowAction}
-            >
-            </lightning-tree-grid>            
+          
+            
+            <template lwc:if={mainRecords}>
+                <c-data-grid
+                    main-records  = {mainRecords}
+                >
+                </c-data-grid>
+            </template>
+            
         </lightning-card>
     </template>        
 </template>

@@ -16,6 +16,8 @@ export default class AccountOnePage extends LightningElement {
             Name: 'Conta 1',
             LastUpdate: '2025-02-12'
         }
+
+        this.mainRecords = pedidos();
     }
 
     handleDetailsClick(event) {
@@ -28,7 +30,7 @@ export default class AccountOnePage extends LightningElement {
 
 
 
-    @track mainRecords = pedidos();
+    @track mainRecords ;
     
 
 }

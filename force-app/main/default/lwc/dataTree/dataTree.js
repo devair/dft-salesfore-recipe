@@ -2,6 +2,7 @@ import { LightningElement, wire, track } from 'lwc';
 import getAccountsWithChildren from '@salesforce/apex/AccountContactController.getAccountsWithChildren';
 import { NavigationMixin } from 'lightning/navigation';
 import FORM_FACTOR from '@salesforce/client/formFactor';
+import { refreshApex } from "@salesforce/apex";
 
 const COLUMNS = [    
     { 
@@ -35,17 +36,22 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
 
     isMobile = 'Small'; //FORM_FACTOR === 'Small';    
     columns = COLUMNS;
-
-    activeSections = [];
     
+    activeSections = [];
+
+    @track mainRecords;
+        
     @wire(getAccountsWithChildren, { searchTerm: '$searchTerm'})
     wiredAccounts({ error, data }) {
         if (data) {            
-            this.treeData = this.formatTreeData(data);            
+            this.treeData = this.formatTreeData(data);     
+            this.mainRecords = this.formatDataGrid(data);                        
+            
         } else if (error) {
             console.error('Erro ao carregar contas:', error);            
         }        
     }
+
 
     formatTreeData(accounts) {
         
@@ -71,12 +77,67 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
         return treeData;
     }
 
+    
+    formatDataGrid(accounts) {
+        
+        const columns = COLUMNS;
+
+        const data = accounts.map(account => 
+            {                               
+                const root = {                
+                    id: account.id,
+                    name: account.name,                
+                    phone: account.phone,
+                    status: account.status,  
+                    recordUrl: `/${account.id}`,
+                    parentId: account.id,
+                    buttonVisibility: ''
+                }
+
+                const processedChildren = (children) => {
+
+                    const dataChild = children.map(child => (
+                        {
+                            id: child.id,
+                            name: child.name,
+                            phone: child.phone,
+                            status: child.status,
+                            recordUrl: `/${child.id}`,
+                            parentId: child.parentId,
+                            buttonVisibility: 'slds-hidden' // Esconde o botão para filhos
+                        })                            
+                    );
+
+                    return   { columns: columns, data: dataChild};                     
+                }; 
+                
+                return {
+                    ...root,
+                    children: account?.children ? processedChildren(account.children) : undefined
+                }
+            }         
+        )
+        
+        const formattedData = { columns: columns, data: data};
+
+        console.debug('Formatted data: ', JSON.stringify(formattedData));
+
+        return formattedData;
+               
+    }
+
     connectedCallback() {
+        //this.mainRecords  = pedidos();
+        
+        console.debug('Pai connectedCallback: ', JSON.stringify(this.mainRecords));  
+
         console.log('The device form factor is: ' + FORM_FACTOR);        
     }
 
+    
     renderedCallback(){
-        
+
+        /*
         if(this.searchTerm){
             if(this.isMobile)
             {
@@ -97,8 +158,8 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
                 const grid =  this.template.querySelector('lightning-tree-grid');
                 grid.collapseAll();
             }
-        }
-    } 
+        } */
+    }
     
     handleRowAction(event) {
         const recordId = event.detail.row.parentId;
@@ -133,5 +194,21 @@ export default class DataTDataTreereeLWC extends NavigationMixin(LightningElemen
     handleSearchChange(event){
         const searchTerm = event.target.value;
         this.searchTerm = searchTerm;
+        
+        // Limpando o timeout anterior se o usuário continuar digitando
+        clearTimeout(this.searchTimeout);
+
+        // Aplicando debounce de 500ms
+        this.searchTimeout = setTimeout(async () => {
+            await refreshApex(this.wiredAccounts);            
+            this.handleRefreshDataGrid(this.searchTerm ? true : false);            
+        }, 500);
+    }
+
+    handleRefreshDataGrid(expanded) {
+        const childComponent = this.template.querySelector('c-data-grid');
+        if (childComponent) {
+            childComponent.refreshData(expanded); // Chamando o método público do filho
+        }
     }
 }
