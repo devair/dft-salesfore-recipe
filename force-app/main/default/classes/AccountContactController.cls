@@ -15,6 +15,9 @@ public with sharing class AccountContactController {
                 parentWrapper.name = parent.Name;
                 parentWrapper.phone = parent.Phone;
                 parentWrapper.status = parent.BlockStatus__c;
+                parentWrapper.webSite = parent.WebSite;
+                parentWrapper.backlogOrders = 100;
+
                 parentWrapper.children = new List<AccountWrapper>();              
 
                 for(Account child: parent.ChildAccounts){
@@ -25,7 +28,7 @@ public with sharing class AccountContactController {
                     childWrapper.phone = child.Phone;
                     childWrapper.status = child.BlockStatus__c;
                     childWrapper.parentId = parent.Id; 
-                    
+                    childWrapper.webSite = child.WebSite;
                     parentWrapper.children.add(childWrapper);
                 }
 
@@ -107,6 +110,8 @@ public with sharing class AccountContactController {
         @AuraEnabled public String phone;
         @AuraEnabled public String status;
         @AuraEnabled public String parentId;
+        @AuraEnabled public String webSite;
+        @AuraEnabled public Integer backlogOrders;
         @AuraEnabled public List<AccountWrapper> children;        
     }
 
@@ -118,8 +123,8 @@ public with sharing class AccountContactController {
      */
     private static List<Account> getAccounts(String searchTerm, Integer limitValue, Integer offsetValue){
 
-        String query = ' SELECT Id, Name, Phone, toLabel(BlockStatus__c), ParentId, ' +                      
-                        ' (SELECT Id, Name, Phone, toLabel(BlockStatus__c), ParentId FROM ChildAccounts ) ' +
+        String query = ' SELECT Id, Name, Phone, toLabel(BlockStatus__c), ParentId, WebSite, ' +                      
+                        ' (SELECT Id, Name, Phone, toLabel(BlockStatus__c), ParentId, WebSite FROM ChildAccounts ) ' +
                         ' FROM Account ';
         
         if(String.isEmpty(searchTerm)){

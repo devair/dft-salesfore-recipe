@@ -1,9 +1,10 @@
 import { LightningElement, api, track } from 'lwc';
-import { processCellAttributes } from './dataGridHelper';
-export default class DataGrid extends LightningElement {
-    @api mainRecords;  
-    @api refresh;
+import { findRecord } from './dataGridHelper';
+import { processRecords } from './dataGridHelper';
 
+export default class DataGrid extends LightningElement {
+    @api mainRecords;
+        
     @track processedMainRecords;
     expandedItems = [];
 
@@ -19,75 +20,15 @@ export default class DataGrid extends LightningElement {
         if(this.mainRecords && this.mainRecords.data && this.mainRecords.data.length > 0){
             this.showNoData = false;
             this.processedMainRecords = undefined;
-            this.processedMainRecords = this.processRecords(this.mainRecords.data, this.mainRecords.columns, expanded);  
+            this.processedMainRecords = processRecords(this.mainRecords.data, this.mainRecords.columns, expanded);  
         }
         else{
             this.showNoData = true;
         }
     }
-
-    processRecords(records, columns, expanded) {
-        const urlLabel = (record, column) => {
-            const field = column?.typeAttributes?.label?.fieldName;
-            const value = field ? record[field]: '';
-            return value;
-        }
-
-        const data = records.map(record => {            
-            const cells = columns.map((column, index) => ({
-                firstField: index === 0,
-                fieldName: column.fieldName,
-                label: column.label,
-                value: record[column.fieldName] || '',
-                isDate: column.type === 'date',
-                isNumber: column.type === 'number',
-                isCurrency: column.type === 'currency',
-                isUrl: column.type === 'url',
-                urlLabel: column.type === 'url' ? urlLabel(record, column) : '',
-                cellAttributes: processCellAttributes(record, column)
-            }));
-            
     
-            const processedChildren = (children) => {
-                return children ? this.processRecords(children.data, children.columns) : null;
-            };
-    
-            const hasChildren = record?.children?.data && record?.children?.data.length > 0 ? true : false ;
-
-            return {
-                ...record,
-                cells,                
-                expanded: `expanded-${record.id}`,
-                hasChildren: hasChildren,
-                children: hasChildren? processedChildren(record.children) : undefined,                
-                isExpanded: hasChildren && expanded ? true : false,
-                icon: 'utility:chevronright'
-            };            
-        });
-
-        return {
-            columns: columns,
-            data: data
-        }
-    }
-
-   
     handleExpand(event, level) {
-        const recordId = event.currentTarget.dataset.id;
-
-        // Função recursiva para encontrar o registro
-        const findRecord = (records, targetId) => {
-            for (const record of records) {
-                if (record.id === targetId) {
-                    return record;
-                }
-                if (record.children?.data) {
-                    const found = findRecord(record.children.data, targetId);
-                    if (found) return found;
-                }
-            }
-            return null;
-        };
+        const recordId = event.currentTarget.dataset.id;       
 
         // Encontra o registro correspondente
         const record = findRecord(this.processedMainRecords.data, recordId);
@@ -124,4 +65,71 @@ export default class DataGrid extends LightningElement {
 
         return elem;
     }
+
+    handleRowClick(event) {
+
+        if (event.target.tagName === 'BUTTON' || event.target.tagName === 'A') {
+            return;
+        }
+        const recordId = event.currentTarget.dataset.id;    
+        const record = findRecord(this.processedMainRecords.data, recordId);    
+        if (record) {
+            // Disparar evento com o objeto da linha clicada
+            const rowClickEvent = new CustomEvent('rowclick', {
+                detail: { record }
+            });
+    
+            this.dispatchEvent(rowClickEvent);
+        }
+
+        console.debug('handleRowClick', JSON.stringify(record));
+    }
+    
+    handleActionClick(event) {
+        event.stopPropagation(); // Evita que o clique propague para a linha
+
+        const recordId = event.currentTarget.dataset.id;
+
+        // Buscar o objeto correspondente
+        const record = findRecord(this.processedMainRecords.data, recordId);
+
+        if (record) {
+            const actionClickEvent = new CustomEvent('actionclick', {
+                detail: { record }
+            });
+
+            this.dispatchEvent(actionClickEvent);
+        }
+
+        console.debug('handleActionClick', JSON.stringify(record));
+    }
+
+    handleRowAction(event) {
+        event.stopPropagation();
+        const recordId = event.currentTarget.dataset.id;
+        const actionName = event.detail.value;
+        const record = findRecord(this.processedMainRecords.data, recordId)
+
+        if (record) {
+            this.dispatchEvent(new CustomEvent('rowaction', {
+                detail: { record, actionName }
+            }));
+        }
+    }
+
+    handleNavigateClick(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const recordId = event.currentTarget.dataset.id;
+        const fieldName = event.currentTarget.dataset.field;
+        const record = findRecord(this.processedMainRecords.data, recordId)
+
+        if (record) {
+            this.dispatchEvent(new CustomEvent('navigate', {
+                detail: { recordId, record, fieldName }
+            }));
+        }
+    }
+    
 }
