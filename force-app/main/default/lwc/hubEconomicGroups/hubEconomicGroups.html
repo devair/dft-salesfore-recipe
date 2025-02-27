@@ -56,22 +56,27 @@
         >        
         </lightning-tree-grid> -->
         
-        
-        <template lwc:if={mainRecords}>        
-            <c-dynamic-html-table
-                main-records={mainRecords}
-                onrowaction={handleRowAction}
-                onnavigate={navigateToOrderPage}
-            ></c-dynamic-html-table>
-        </template>
+        <lightning-card title="Released">
+            <template lwc:if={mainRecords}>
+                <c-data-grid
+                    main-records={mainRecords}                                
+                    onnavigate={navigateToOrderPage}
+                >
+                </c-data-grid>
+            </template>
+        </lightning-card>
 
+        <lightning-card title="Developer">
+            <template lwc:if={mainRecords}>        
+                <c-dynamic-html-table
+                    main-records={mainRecords}
+                    onrowaction={handleRowAction}
+                    onnavigate={navigateToOrderPage}
+                ></c-dynamic-html-table> 
+            </template>
+        </lightning-card>
         
-        <template lwc:if={mainRecords}>
-            <c-data-grid
-                main-records={mainRecords}
-            >
-            </c-data-grid>
-        </template>
+        
         </lightning-card>
     </template>        
 </template>

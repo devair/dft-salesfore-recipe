@@ -197,20 +197,28 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
     navigateToOrderPage(event) {
         const { recordId, fieldName } = event.detail;
         
-        if(fieldName === 'backlogOrders'){        
-            let direction = {
-                componentDef: 'c:accountOnePage', 
-                attributes: {
-                    recordId: recordId
-                }               
-            }
 
-            let encodeDef = btoa(JSON.stringify(direction));
+        switch (fieldName) {
+            case 'backlogOrders':
 
-            this[NavigationMixin.Navigate]({
-                type: 'standard__webPage',
-                attributes: {url: '/one/one.app#'+encodeDef}
-            });
+                let direction = {
+                    componentDef: 'c:accountOnePage', 
+                    attributes: {
+                        recordId: recordId
+                    }               
+                }
+    
+                let encodeDef = btoa(JSON.stringify(direction));
+    
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__webPage',
+                    attributes: {url: '/one/one.app#'+encodeDef}
+                });
+
+                break;
+        
+            default:
+                break;
         }
     }
 }
