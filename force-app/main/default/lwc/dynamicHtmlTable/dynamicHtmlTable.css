@@ -1,0 +1,25 @@
+.vertical-line {
+    border-left: 2.5px solid #948888; /* Linha vertical preta */
+    padding-left: 8px !important; /* Ajuste opcional para espaçamento */
+    left: 15px;
+}
+
+.hover-cell {
+    position: relative;
+    padding: 8px;
+}
+
+.hover-cell:hover::after {
+    content: attr(data-tooltip); /* Usa um atributo data-tooltip para mostrar o texto */
+    position: absolute;
+    left: 50%;
+    bottom: 100%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 12px;
+    z-index: 10;
+}
