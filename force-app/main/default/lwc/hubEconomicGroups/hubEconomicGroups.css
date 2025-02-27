@@ -36,3 +36,8 @@
     background-color: white;
     border-radius: 8px;
 }
+
+
+.vibrant-pink-50-icon{
+    --sds-c-icon-color-foreground-default: #E3066A;
+}

@@ -45,13 +45,33 @@
                 </lightning-input>
             </lightning-button-group>     
           
+            
+        <!--
+        <lightning-tree-grid class="lightning-tree-grid"
+            columns={columns}
+            data={treeData}
+            key-field="id"
+            hide-checkbox-column="true"
+            onrowaction={handleRowAction}
+        >        
+        </lightning-tree-grid> -->
+        
+        
+        <template lwc:if={mainRecords}>        
+            <c-dynamic-html-table
+                main-records={mainRecords}
+                onrowaction={handleRowAction}
+                onnavigate={navigateToOrderPage}
+            ></c-dynamic-html-table>
+        </template>
+
         
         <template lwc:if={mainRecords}>
             <c-data-grid
-                main-records  = {mainRecords}
+                main-records={mainRecords}
             >
             </c-data-grid>
-        </template>        
+        </template>
         </lightning-card>
     </template>        
 </template>

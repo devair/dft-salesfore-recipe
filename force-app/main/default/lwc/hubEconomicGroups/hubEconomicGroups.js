@@ -14,14 +14,36 @@ const COLUMNS = [
             target: '_self',        
         } 
     },
-    { label: 'Telefone', fieldName: 'phone', type: 'phone' },
+    { label: 'Telefone', fieldName: 'phone', type: 'phone'        
+    },
     { label: 'Status', fieldName: 'status', type: 'text',
         cellAttributes: {
             iconName: { fieldName: 'statusIcon'},
             iconPosition: 'left',
-            iconVariant: { fieldName: 'statusIconVariant'}
+            iconVariant: { fieldName: 'statusIconVariant'},            
+            class: 'vibrant-pink-50-icon',
+        },
+    },
+    { 
+        label: 'Web Site', 
+        fieldName: 'webSite', 
+        type: 'url', 
+        typeAttributes: { 
+            label: { fieldName: 'webSite' }, 
+            target: '_self',        
         } 
     },
+    { label: 'Pedidos em Carteira', fieldName: 'backlogOrders', type: 'link' },   
+    { label: 'One Page', 
+        type: 'button', 
+        typeAttributes: { 
+            label: { fieldName: 'backlogOrders' },
+            iconName: 'utility:company', 
+            name: 'onePage',
+            label: 'One page'
+        },
+        cellAttributes: { class: { fieldName: 'buttonVisibility' } } // Controla visibilidade
+    }
     
 ];
 
@@ -41,10 +63,12 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
         
     searchTimeout;
     
+
+    
     @wire(getAccountsWithChildren, { searchTerm: '$searchTerm'})
     wiredAccounts({ error, data }) {
         if (data) {            
-            this.treeData = this.formatTreeData(data);     
+            //this.treeData = this.formatTreeData(data);     
             this.mainRecords = this.formatDataGrid(data);                        
             
         } else if (error) {
@@ -52,7 +76,7 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
         }        
     }
 
-
+/*
     formatTreeData(accounts) {
         
         let treeData = accounts.map(account => ({
@@ -61,8 +85,8 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
             phone: account.phone,
             status: account.status,  
             recordUrl: `/${account.id}`,
-            parentId: account.id,
-            buttonVisibility: '',
+            parentId: account.id,            
+            webSite: account.webSite,
             _children: account.children?.map(child => ({
                 id: child.id,
                 name: child.name,
@@ -70,13 +94,15 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
                 status: child.status,
                 recordUrl: `/${child.id}`,
                 parentId: child.parentId,
-                buttonVisibility: 'slds-hidden' // Esconde o botão para filhos
+                parentUrl: `/${account.id}`,
+                parentName: account.name,      
+                webSite: child.webSite                
             }))
         }));
         
         return treeData;
     }
-
+*/
     
     formatDataGrid(accounts) {
         
@@ -94,7 +120,10 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
                     buttonVisibility: '',
                     status: account.status,           
                     statusIcon: 'utility:error',
-                    statusIconVariant: 'error'
+                    statusIconVariant: 'error',
+                    webSite: account.webSite,
+                    backlogOrders: account.backlogOrders,
+                    backlogOrdersUrl: `/${account.id}`
                 }
 
                 const processedChildren = (children) => {
@@ -110,7 +139,9 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
                             status: child.status,
                             statusIcon: 'utility:success',
                             statusIconVariant: 'success',
-                            buttonVisibility: 'slds-hidden' // Esconde o botão para filhos
+                            parentUrl: `/${account.id}`,
+                            parentName: account.name,     
+                            webSite: child.webSite,
                         })                            
                     );
 
@@ -129,49 +160,9 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
                     children: account?.children ? processedChildren(account.children) : undefined
                 }
             }         
-        )
-        
-        const formattedData = { columns: columns, data: data};
-
-        //console.debug('Formatted data: ', JSON.stringify(formattedData));
-
-        return formattedData;
-                
-    }
-
-    connectedCallback() {        
-        //console.debug('Pai connectedCallback: ', JSON.stringify(this.mainRecords));  
-        //console.log('The device form factor is: ' + FORM_FACTOR);        
-    }
-
-    handleRowAction(event) {
-        const recordId = event.detail.row.parentId;
-        const actionName = event.detail.action.name;
-
-        if (actionName === 'onePage') {
-            this.openLightningTab(recordId);
-        }
-    }
-
-    handleOnePage(event){
-        const recordId = event.target.value;
-        this.openLightningTab(recordId);
-    }
-
-    openLightningTab(recordId) {
-        let direction = {
-            componentDef: 'c:accountOnePage',
-            attributes: {
-                recordId: recordId
-            }
-        }
-
-        let encodeDef = btoa(JSON.stringify(direction));
-
-        this[NavigationMixin.Navigate]({
-            type: 'standard__webPage',
-            attributes: {url: '/one/one.app#'+encodeDef}
-        });
+        )        
+        const formattedData = { columns: columns, data: data};        
+        return formattedData;                
     }
 
     handleSearchChange(event){
@@ -192,6 +183,34 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
         const childComponent = this.template.querySelector('c-data-grid');
         if (childComponent) {
             childComponent.refreshData(expanded); // Chamando o método público do filho
+        }
+
+
+        const childComponentTeporario = this.template.querySelector('c-dynamic-html-table');
+        if (childComponentTeporario) {
+            childComponentTeporario.refreshData(expanded); // Chamando o método público do filho
+        }        
+    }
+
+
+
+    navigateToOrderPage(event) {
+        const { recordId, fieldName } = event.detail;
+        
+        if(fieldName === 'backlogOrders'){        
+            let direction = {
+                componentDef: 'c:accountOnePage', 
+                attributes: {
+                    recordId: recordId
+                }               
+            }
+
+            let encodeDef = btoa(JSON.stringify(direction));
+
+            this[NavigationMixin.Navigate]({
+                type: 'standard__webPage',
+                attributes: {url: '/one/one.app#'+encodeDef}
+            });
         }
     }
 }
