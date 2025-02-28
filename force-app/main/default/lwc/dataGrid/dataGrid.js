@@ -119,15 +119,15 @@ export default class DataGrid extends LightningElement {
 
     handleNavigateClick(event) {
         event.preventDefault();
-        event.stopPropagation();
-
         const recordId = event.currentTarget.dataset.id;
         const fieldName = event.currentTarget.dataset.field;
         const record = findRecord(this.processedMainRecords.data, recordId)
 
         if (record) {
             this.dispatchEvent(new CustomEvent('navigate', {
-                detail: { recordId, record, fieldName }
+                detail: { recordId, record, fieldName },
+                bubbles: true,
+                composed: true
             }));
         }
     }
