@@ -17,8 +17,7 @@ export const processCellAttributes = (record, column) =>{
             }                            
             else{
                 iconName = cellAttributes.iconName
-            }                    
-            console.debug('iconName', iconName);
+            }                                
         }
 
         let iconVariant = cellAttributes?.iconVariant;
@@ -29,8 +28,7 @@ export const processCellAttributes = (record, column) =>{
             }                            
             else{
                 iconVariant = cellAttributes.iconVariant
-            }                    
-            console.debug('iconVariant', iconVariant);
+            }                                
         }
 
         const isLeft = cellAttributes?.iconPosition === 'left' ? true : false;
