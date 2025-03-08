@@ -37,19 +37,7 @@ export default class DataGrid extends LightningElement {
             this.changeElement(record);
         }
     }
-
-    handleExpandLevelOne(event) {
-        this.handleExpand(event, 1);
-    }
-
-    handleExpandLevelTwo(event) {
-        this.handleExpand(event, 2);
-    }
-
-    handleExpandLevelThree(event) {
-        this.handleExpand(event, 3);
-    }
-
+    
     changeElement(elem) {
         // Alterna o estado de expansão e o ícone
         const isExpanded = elem.icon === 'utility:chevrondown';
@@ -66,61 +54,10 @@ export default class DataGrid extends LightningElement {
         return elem;
     }
 
-    handleRowClick(event) {
-
-        if (event.target.tagName === 'BUTTON' || event.target.tagName === 'A') {
-            return;
-        }
-        const recordId = event.currentTarget.dataset.id;    
-        const record = findRecord(this.processedMainRecords.data, recordId);    
-        if (record) {
-            // Disparar evento com o objeto da linha clicada
-            const rowClickEvent = new CustomEvent('rowclick', {
-                detail: { record }
-            });
-    
-            this.dispatchEvent(rowClickEvent);
-        }
-
-        console.debug('handleRowClick', JSON.stringify(record));
-    }
-    
-    handleActionClick(event) {
-        event.stopPropagation(); // Evita que o clique propague para a linha
-
-        const recordId = event.currentTarget.dataset.id;
-
-        // Buscar o objeto correspondente
-        const record = findRecord(this.processedMainRecords.data, recordId);
-
-        if (record) {
-            const actionClickEvent = new CustomEvent('actionclick', {
-                detail: { record }
-            });
-
-            this.dispatchEvent(actionClickEvent);
-        }
-
-        console.debug('handleActionClick', JSON.stringify(record));
-    }
-
-    handleRowAction(event) {
-        event.stopPropagation();
-        const recordId = event.currentTarget.dataset.id;
-        const actionName = event.detail.value;
-        const record = findRecord(this.processedMainRecords.data, recordId)
-
-        if (record) {
-            this.dispatchEvent(new CustomEvent('rowaction', {
-                detail: { record, actionName }
-            }));
-        }
-    }
-
     handleNavigateClick(event) {
         event.preventDefault();
-        const recordId = event.currentTarget.dataset.id;
-        const fieldName = event.currentTarget.dataset.field;
+        const recordId = event.detail.recordId;
+        const fieldName = event.detail.fieldName;
         const record = findRecord(this.processedMainRecords.data, recordId)
 
         if (record) {

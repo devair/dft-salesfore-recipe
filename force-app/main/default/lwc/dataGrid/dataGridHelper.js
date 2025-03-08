@@ -22,12 +22,12 @@ export const processCellAttributes = (record, column) =>{
 
         let iconVariant = cellAttributes?.iconVariant;
         
-        if(cellAttributes?.iconVariant){   
-            if(cellAttributes?.iconVariant?.fieldName){
-                iconVariant = record[cellAttributes.iconVariant.fieldName];
+        if(iconVariant){   
+            if(iconVariant?.fieldName){
+                iconVariant = record[iconVariant.fieldName];
             }                            
             else{
-                iconVariant = cellAttributes.iconVariant
+                iconVariant = iconVariant
             }                                
         }
 
@@ -36,6 +36,64 @@ export const processCellAttributes = (record, column) =>{
 
         
         objReturn = { iconName, isLeft, isRight, iconVariant };        
+    }
+    
+
+    return objReturn;
+}
+
+export const processTypeAttributes = (record, column) =>{
+    const typeAttributes = column?.typeAttributes;
+    let objReturn;
+    
+    if(typeAttributes){
+        let iconName;
+        
+        if(typeAttributes?.iconName){   
+            if(typeAttributes.iconName?.fieldName){
+                iconName = record[typeAttributes.iconName.fieldName];
+            }                            
+            else{
+                iconName = typeAttributes.iconName
+            }                                
+        }
+
+        let iconVariant = typeAttributes?.iconVariant;
+        
+        if(iconVariant){   
+            if(iconVariant?.fieldName){
+                iconVariant = record[iconVariant.fieldName];
+            }                            
+            else{
+                iconVariant = iconVariant
+            }                                
+        }
+
+        let iconClass = typeAttributes?.iconClass;
+        if(iconClass){   
+            if(iconClass?.fieldName){
+                iconClass = record[iconClass.fieldName];
+            }                            
+            else{
+                iconClass = iconClass
+            }                                
+        }
+
+        const isLeft = typeAttributes?.iconPosition === 'left' ? true : false;
+        const isRight = typeAttributes?.iconPosition === 'right' ? true : false;
+
+        let currencyCode = typeAttributes?.currencyCode;
+
+        let currencyDisplayAs = typeAttributes?.currencyDisplayAs;
+        
+        objReturn = { iconName, 
+                isLeft, 
+                isRight, 
+                iconVariant, 
+                currencyCode, 
+                currencyDisplayAs, 
+                name: typeAttributes?.name, 
+                label: typeAttributes?.label};        
     }
     
 
@@ -77,9 +135,10 @@ export const processRecords = (records, columns, expanded) => {
             isCurrency: column.type === 'currency',
             isUrl: column.type === 'url',
             isButton: column.type === 'button',
+            isButtonIcon: column.type === 'button-icon',
             urlLabel: column.type === 'url' ? urlLabel(record, column) : '',
             isLink: column.type === 'link' ,
-            typeAttributes: null,
+            typeAttributes: processTypeAttributes(record, column),
             cellAttributes: processCellAttributes(record, column)
         }));
         

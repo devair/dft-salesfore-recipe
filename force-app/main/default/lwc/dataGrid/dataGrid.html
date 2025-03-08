@@ -11,122 +11,63 @@
         </div>
     </template>
     <template if:false={showNoData}>
-        <div class="slds-table slds-table_bordered slds-table_cell-buffer">        
-            <table class="slds-table slds-table_bordered">
-                <thead>                
-                    <template for:each={processedMainRecords.columns} for:item="column">
-                        <th key={column.fieldName} scope="col">
-                            {column.label}
-                        </th>
-                    </template>                                    
-                </thead>
-                <tbody>                
-                    <template for:each={processedMainRecords.data} for:item="recordLevelOne">
-                        <!-- First Level -->
-                        <tr key={recordLevelOne.id} onclick={handleRowClick} data-id={recordLevelOne.id}>                        
-                            <template for:each={recordLevelOne.cells} for:item="cell">
-                                <template lwc:if={cell.firstField}>
-                                    <template lwc:if={recordLevelOne.hasChildren}>
-                                        <td key={cell.fieldName} class="slds-p-left_none">
-                                            <lightning-button-icon 
-                                                class="slds-p-left_x-small"
-                                                icon-name={recordLevelOne.icon}  
-                                                data-id = {recordLevelOne.id} 
-                                                variant="bare"
-                                                value={recordLevelOne}
-                                                onclick={handleExpand}
-                                            >
-                                            </lightning-button-icon>
-                                            <template lwc:if={cell.isUrl}>
-                                                <lightning-formatted-url 
-                                                    value={cell.value} 
-                                                    target="_self"
-                                                    label={cell.urlLabel}
-                                                ></lightning-formatted-url></p>                                            
-                                            </template> 
-                                            <template lwc:else>
-                                                {cell.value}
-                                            </template>                                                                                                                 
-                                        </td>
-                                    </template>
-                                    <template lwc:else>
-                                        <td key={cell.fieldName}>                                                                                             
-                                            <template lwc:if={cell.isUrl}>
-                                                <lightning-formatted-url 
-                                                    value={cell.value} 
-                                                    target="_self"
-                                                    label={cell.urlLabel}
-                                                ></lightning-formatted-url></p>                                            
-                                            </template> 
-                                            <template lwc:else>
-                                                {cell.value}
-                                            </template>                                                                                                                          
-                                        </td>
-                                    </template>
-                                                                        
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+            <thead>
+                <template for:each={processedMainRecords.columns} for:item="column">
+                    <th key={column.fieldName} aria-label={column.label} scope="col">
+                        <span class="slds-truncate" title={column.label}>{column.label}</span>
+                    </th>
+                </template>
+
+            </thead>
+            <tbody>
+                <template for:each={processedMainRecords.data} for:item="recordItem">
+                    <!-- First Level -->
+                    <tr key={recordItem.id} data-id={recordItem.id} aria-selected="false" class="slds-hint-parent">
+                        <template for:each={recordItem.cells} for:item="cell">
+                            <!-- Fist column-->
+                            <template lwc:if={cell.firstField}>
+                                <template lwc:if={recordItem.hasChildren}>
+                                    <td key={cell.fieldName} class="slds-p-left_none" height="5px">
+                                        <lightning-button-icon class="slds-p-left_x-small" icon-name={recordItem.icon}
+                                            data-id={recordItem.id} variant="bare" value={recordItem}
+                                            onclick={handleExpand}>
+                                        </lightning-button-icon>
+                                        <c-data-grid-fields record-data={recordItem} cell={cell}
+                                            onlocalnavigate={handleNavigateClick}></c-data-grid-fields>
+                                    </td>
                                 </template>
                                 <template lwc:else>
-                                    <td key={cell.fieldName} >
-                                        <template lwc:if={cell.cellAttributes}>
-                                            <lightning-icon icon-name={cell.cellAttributes.iconName} 
-                                                    size="x-small"
-                                                    variant ={cell.cellAttributes.iconVariant}  
-                                                >
-                                            </lightning-icon>  
-                                        </template>
-                                        
-                                        <template lwc:if={cell.isDate}>                                    
-                                            <lightning-formatted-date-time value={cell.value} year="numeric" month="2-digit" day="2-digit">
-                                            </lightning-formatted-date-time>
-                                        </template>
-                                        <template lwc:elseif={cell.isCurrency}>                                    
-                                            <lightning-formatted-number value={cell.value} 
-                                                format-style="currency" 
-                                                currency-code="BRL" 
-                                                currency-display-as="code">                                        
-                                            </lightning-formatted-number>
-                                        </template>
-                                        <template lwc:elseif={cell.isNumber}>                                    
-                                            <lightning-formatted-number value={cell.value}></lightning-formatted-number>
-                                        </template>
-                                        <template lwc:elseif={cell.isUrl}>
-                                            <lightning-formatted-url 
-                                                value={cell.value} 
-                                                target="_self"
-                                                label={cell.urlLabel}
-                                            ></lightning-formatted-url></p>                                            
-                                        </template>
-                                        <template lwc:elseif={cell.isLink}>
-                                            <a href="#" data-id={recordLevelOne.id} data-field={cell.fieldName} onclick={handleNavigateClick}>{cell.value}</a>
-                                        </template>
-                                        <template lwc:elseif={cell.isButton}>
-                                            <button data-id={recordLevelOne.id} onclick={handleActionClick}>{cell.value}</button>
-                                        </template>
-                                        <template lwc:else>
-                                            {cell.value}
-                                        </template>                                        
+                                    <td key={cell.fieldName}>
+                                        <c-data-grid-fields record-data={recordItem} cell={cell}
+                                            onlocalnavigate={handleNavigateClick}></c-data-grid-fields>
                                     </td>
-                                </template>    
+                                </template>
                             </template>
-                        </tr>
-                        <!-- Tabela de Itens ( first level expandida) -->
-                        <template if:true={recordLevelOne.isExpanded}>
-                            <tr key={recordLevelOne.expanded} class="slds-hint-parent">
-                                <td class="vertical-line" colspan={recordLevelOne.children.columns.length}>
-                                    <div class="slds-p-top_large slds-p-bottom_large">
-                                        <!-- Second Level -->
-                                        <c-data-grid
-                                            main-records  = {recordLevelOne.children}
-                                            onnavigate={handleNavigateClick}
-                                        >
-                                        </c-data-grid>
-                                    </div>
+                            <!-- Other columns-->
+                            <template lwc:else>
+                                <td key={cell.fieldName}>
+                                    <c-data-grid-fields record-data={recordItem} cell={cell}
+                                        onlocalnavigate={handleNavigateClick}></c-data-grid-fields>
                                 </td>
-                            </tr>
-                        </template>                              
+                            </template>
+                        </template>
+                    </tr>
+                    <!-- Tabela de Itens ( first level expandida) -->
+                    <template if:true={recordItem.isExpanded}>
+                        <tr key={recordItem.expanded} class="slds-hint-parent">
+                            <td class="vertical-line" colspan={recordItem.children.columns.length}>
+                                <div class="slds-p-top_large slds-p-bottom_large">
+                                    <!-- Second Level -->
+                                    <c-data-grid main-records={recordItem.children}
+                                        onlocalnavigate={handleNavigateClick}>
+                                    </c-data-grid>
+                                </div>
+                            </td>
+                        </tr>
                     </template>
-                </tbody>
-            </table>
-        </div>
+                </template>
+            </tbody>
+        </table>
     </template>
 </template>
