@@ -16,7 +16,7 @@ public with sharing class AccountContactController {
                 parentWrapper.phone = parent.Phone;
                 parentWrapper.status = parent.BlockStatus__c;
                 parentWrapper.webSite = parent.WebSite;
-                parentWrapper.backlogOrders = 100;
+                parentWrapper.backlogOrders = generateRandomNumber();
 
                 parentWrapper.children = new List<AccountWrapper>();              
 
@@ -146,4 +146,8 @@ public with sharing class AccountContactController {
             return Database.queryWithBinds(query, bindVariablesMap, AccessLevel.USER_MODE);
         }                            
     }    
+
+    private static Integer generateRandomNumber() {
+        return 100 + Math.mod(Math.abs(Crypto.getRandomInteger()), 9901);
+    }
 }
