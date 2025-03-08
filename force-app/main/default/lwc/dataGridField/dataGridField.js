@@ -1,6 +1,6 @@
 import { LightningElement, api} from 'lwc';
 
-export default class DataGridFields extends LightningElement {
+export default class DataGridField extends LightningElement {
     @api recordData;
     @api cell;    
 

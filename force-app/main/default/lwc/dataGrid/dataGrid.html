@@ -33,22 +33,22 @@
                                             data-id={recordItem.id} variant="bare" value={recordItem}
                                             onclick={handleExpand}>
                                         </lightning-button-icon>
-                                        <c-data-grid-fields record-data={recordItem} cell={cell}
-                                            onlocalnavigate={handleNavigateClick}></c-data-grid-fields>
+                                        <c-data-grid-field record-data={recordItem} cell={cell}
+                                            onlocalnavigate={handleNavigateClick}></c-data-grid-field>
                                     </td>
                                 </template>
                                 <template lwc:else>
                                     <td key={cell.fieldName}>
-                                        <c-data-grid-fields record-data={recordItem} cell={cell}
-                                            onlocalnavigate={handleNavigateClick}></c-data-grid-fields>
+                                        <c-data-grid-field record-data={recordItem} cell={cell}
+                                            onlocalnavigate={handleNavigateClick}></c-data-grid-field>
                                     </td>
                                 </template>
                             </template>
                             <!-- Other columns-->
                             <template lwc:else>
                                 <td key={cell.fieldName}>
-                                    <c-data-grid-fields record-data={recordItem} cell={cell}
-                                        onlocalnavigate={handleNavigateClick}></c-data-grid-fields>
+                                    <c-data-grid-field record-data={recordItem} cell={cell}
+                                        onlocalnavigate={handleNavigateClick}></c-data-grid-field>
                                 </td>
                             </template>
                         </template>
