@@ -126,7 +126,7 @@ public with sharing class AccountContactController {
                 mapStatus.put('icon', 'utility:error');
             }
             when 'Bloqueio 3' {
-                mapStatus.put('color', 'sds-c-icon-color-foreground-default: #ffff00 !important');
+                mapStatus.put('color', '--sds-c-icon-color-foreground-default: yellow !important');
                 mapStatus.put('icon', 'utility:error');
             }
             when else {

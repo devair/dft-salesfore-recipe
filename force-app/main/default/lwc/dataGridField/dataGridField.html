@@ -101,6 +101,16 @@
                 >
                 </lightning-icon>  
             </template>
+            <template lwc:else>
+                <lightning-icon icon-name={cell.cellAttributes.iconName}
+                    data-id={recordData.id}  
+                    data-field={cell.fieldName}
+                    name={cell.fieldName}   
+                    size="x-small"                    
+                    onclick={handleButtonLinkClick}                     
+                >
+                </lightning-icon>  
+            </template>
         </template>
         {cell.value}
     </template> 
