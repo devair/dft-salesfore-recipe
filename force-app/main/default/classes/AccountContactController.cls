@@ -14,10 +14,14 @@ public with sharing class AccountContactController {
                 parentWrapper.label = parent.Name;
                 parentWrapper.name = parent.Name;
                 parentWrapper.phone = parent.Phone;
-                parentWrapper.status = parent.BlockStatus__c;
+                parentWrapper.status = parent.BlockStatus__c;                
+                Map<String, String> mapStatusIcon = getStatusIcon(parent.BlockStatus__c);                
+                parentWrapper.statusIcon = mapStatusIcon.get('icon');
+                parentWrapper.statusIconClass = mapStatusIcon.get('color');
+
                 parentWrapper.webSite = parent.WebSite;
                 parentWrapper.backlogOrders = generateRandomNumber();
-
+                parentWrapper.currencyCode = Math.random() >= 0.5 ? 'BRL' : 'USD';
                 parentWrapper.children = new List<AccountWrapper>();              
 
                 for(Account child: parent.ChildAccounts){
@@ -29,6 +33,12 @@ public with sharing class AccountContactController {
                     childWrapper.status = child.BlockStatus__c;
                     childWrapper.parentId = parent.Id; 
                     childWrapper.webSite = child.WebSite;
+                    childWrapper.backlogOrders = generateRandomNumber();
+
+                    Map<String, String> mapStatusIconChild = getStatusIcon(child.BlockStatus__c); 
+                    childWrapper.statusIcon = mapStatusIconChild.get('icon');
+                    childWrapper.statusIconClass = mapStatusIconChild.get('color');
+
                     parentWrapper.children.add(childWrapper);
                 }
 
@@ -103,6 +113,31 @@ public with sharing class AccountContactController {
         return accountList;
     }
 
+    private static Map<String, String> getStatusIcon(String status){
+        Map<String, String> mapStatus = new Map<String, String>();
+
+        switch on status {
+            when 'Bloqueio 1' {
+                mapStatus.put('color', '--sds-c-icon-color-foreground-default: #ff0000 !important');
+                mapStatus.put('icon', 'utility:error');
+            }
+            when 'Bloqueio 2' {
+                mapStatus.put('color', '--sds-c-icon-color-foreground-default: #ffa500 !important');
+                mapStatus.put('icon', 'utility:error');
+            }
+            when 'Bloqueio 3' {
+                mapStatus.put('color', 'sds-c-icon-color-foreground-default: #ffff00 !important');
+                mapStatus.put('icon', 'utility:error');
+            }
+            when else {
+                mapStatus.put('color', '--sds-c-icon-color-foreground-default: #008000 !important;');
+                mapStatus.put('icon', 'utility:success');
+            }
+        }
+
+        return mapStatus;
+    }
+
     public class AccountWrapper {
         @AuraEnabled public String id;
         @AuraEnabled public String label;
@@ -111,7 +146,10 @@ public with sharing class AccountContactController {
         @AuraEnabled public String status;
         @AuraEnabled public String parentId;
         @AuraEnabled public String webSite;
+        @AuraEnabled public String currencyCode;
         @AuraEnabled public Integer backlogOrders;
+        @AuraEnabled public String statusIconClass;
+        @AuraEnabled public String statusIcon;
         @AuraEnabled public List<AccountWrapper> children;        
     }
 

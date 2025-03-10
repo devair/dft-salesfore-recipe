@@ -9,37 +9,49 @@ export const processCellAttributes = (record, column) =>{
     let objReturn;
     
     if(cellAttributes){
-        let iconName;
-        
-        if(cellAttributes?.iconName){   
-            if(cellAttributes.iconName?.fieldName){
-                iconName = record[cellAttributes.iconName.fieldName];
-            }                            
-            else{
-                iconName = cellAttributes.iconName
-            }                                
+        // Icon Name
+        let iconName = cellAttributes?.iconName;        
+        if(iconName && iconName?.fieldName ){   
+            iconName = record[iconName.fieldName];
         }
 
-        let iconVariant = cellAttributes?.iconVariant;
+        // Icon Variant
+        let iconVariant = cellAttributes?.iconVariant;        
+        if(iconVariant && iconVariant?.fieldName){
+            iconVariant = record[iconVariant.fieldName];
+        }                            
         
-        if(iconVariant){   
-            if(iconVariant?.fieldName){
-                iconVariant = record[iconVariant.fieldName];
-            }                            
-            else{
-                iconVariant = iconVariant
-            }                                
+        // Icon class
+        let iconStyle = cellAttributes?.iconStyle;        
+        if(iconStyle && iconStyle?.fieldName ){
+            iconStyle = record[iconStyle.fieldName]
         }
 
+        // Icon Position
         const isLeft = cellAttributes?.iconPosition === 'left' ? true : false;
         const isRight = cellAttributes?.iconPosition === 'right' ? true : false;
 
+        let currencyAttributes;        
+        if(column.type === 'currency'){
+            currencyAttributes = currencyType(cellAttributes, record);
+        }
         
-        objReturn = { iconName, isLeft, isRight, iconVariant };        
+        objReturn = { iconName, isLeft, isRight, iconVariant, iconStyle, ... currencyAttributes };        
     }
     
 
     return objReturn;
+}
+
+const currencyType = (attributes, record )=> {
+    
+    let  currencyCode = attributes.currencyCode;
+    currencyCode = currencyCode?.fieldName ?  record[currencyCode.fieldName] : currencyCode;
+
+    return {
+        currencyCode,
+        currencyDisplayAs: attributes.currencyDisplayAs 
+    };
 }
 
 export const processTypeAttributes = (record, column) =>{
@@ -47,51 +59,36 @@ export const processTypeAttributes = (record, column) =>{
     let objReturn;
     
     if(typeAttributes){
-        let iconName;
         
-        if(typeAttributes?.iconName){   
-            if(typeAttributes.iconName?.fieldName){
-                iconName = record[typeAttributes.iconName.fieldName];
-            }                            
-            else{
-                iconName = typeAttributes.iconName
-            }                                
-        }
+        let iconName = typeAttributes?.iconName;        
+        if(iconName && iconName?.fieldName){
+            iconName = record[typeAttributes.iconName.fieldName];
+        }                            
+        
 
-        let iconVariant = typeAttributes?.iconVariant;
-        
-        if(iconVariant){   
-            if(iconVariant?.fieldName){
-                iconVariant = record[iconVariant.fieldName];
-            }                            
-            else{
-                iconVariant = iconVariant
-            }                                
-        }
+        let iconVariant = typeAttributes?.iconVariant;        
+        if(iconVariant && iconVariant?.fieldName){
+            iconVariant = record[iconVariant.fieldName];
+        }    
 
         let iconClass = typeAttributes?.iconClass;
-        if(iconClass){   
-            if(iconClass?.fieldName){
-                iconClass = record[iconClass.fieldName];
-            }                            
-            else{
-                iconClass = iconClass
-            }                                
-        }
-
+        if(iconClass && iconClass?.fieldName){
+            iconClass = record[iconClass.fieldName];
+        }                            
+        
         const isLeft = typeAttributes?.iconPosition === 'left' ? true : false;
         const isRight = typeAttributes?.iconPosition === 'right' ? true : false;
 
-        let currencyCode = typeAttributes?.currencyCode;
-
-        let currencyDisplayAs = typeAttributes?.currencyDisplayAs;
+        let currencyAttributes;        
+        if(column.type === 'currency'){
+            currencyAttributes = currencyType(typeAttributes,record);
+        }
         
         objReturn = { iconName, 
                 isLeft, 
                 isRight, 
                 iconVariant, 
-                currencyCode, 
-                currencyDisplayAs, 
+                ...currencyAttributes,                 
                 name: typeAttributes?.name, 
                 label: typeAttributes?.label};        
     }

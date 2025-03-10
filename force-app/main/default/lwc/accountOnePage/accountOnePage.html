@@ -1,8 +1,7 @@
 <template>
-
-    <lightning-record-view-form object-api-name={objectApiName} record-id={recordId}>
-        <c-account-one-page-header record-data={recordData}></c-account-one-page-header>
-    </lightning-record-view-form>
+    <template lwc:if={recordData}>        
+        <c-account-one-page-header record-data={recordData}></c-account-one-page-header>        
+    </template>
 
     <div class="slds-p-top_small">
         <lightning-card variant="base">
@@ -117,11 +116,19 @@
                         </div>
                     </lightning-tab>
                     <lightning-tab label="Vendas">
-                        <div class="slds-p-around_small">
-                            <c-data-grid main-records={mainRecords}>
-                            </c-data-grid>
+                        <div class="slds-p-around_small">                                                                                    
+                            <c-data-grid
+                                main-records={mainRecords}
+                                onnavigate={navigateToPage}
+                                onbuttonclick={handleButtonClick}  >
+                            </c-data-grid>                                                                               
                         </div>
                     </lightning-tab>
+                    <lightning-tab label="Teste tabela celula com 2 linhas">
+                        <div class="slds-p-around_small">                                                                                    
+                            <c-order-one-page></c-order-one-page>                                                                                 
+                        </div>
+                    </lightning-tab>                    
                 </lightning-tabset>
             </div>
         </lightning-card>

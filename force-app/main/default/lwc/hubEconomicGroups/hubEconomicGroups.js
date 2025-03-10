@@ -8,20 +8,19 @@ const COLUMNS = [
     { 
         label: 'Nome', 
         fieldName: 'recordUrl', 
-        type: 'url', 
+        type: 'url',         
         typeAttributes: { 
             label: { fieldName: 'name' }, 
             target: '_self',        
-        } 
+        }
     },
     { label: 'Telefone', fieldName: 'phone', type: 'phone'        
     },
     { label: 'Status', fieldName: 'status', type: 'text',
         cellAttributes: {
             iconName: { fieldName: 'statusIcon'},
-            iconPosition: 'left',
-            iconVariant: { fieldName: 'statusIconVariant'},            
-            class: 'vibrant-pink-50-icon',
+            iconStyle: { fieldName: 'statusIconClass'},
+            iconPosition: 'left',                   
         },
     },
     { 
@@ -33,18 +32,26 @@ const COLUMNS = [
             target: '_self',        
         } 
     },
-    { label: 'Pedidos em Carteira', fieldName: 'backlogOrders', type: 'link' },   
-    { label: 'One Page', 
-        type: 'button', 
-        typeAttributes: { 
-            label: { fieldName: 'backlogOrders' },
-            iconName: 'utility:company', 
-            name: 'onePage',
-            label: 'One page'
-        },
-        cellAttributes: { class: { fieldName: 'buttonVisibility' } } // Controla visibilidade
-    }
-    
+    { 
+        label: 'Pedidos em Carteira', 
+        fieldName: 'backlogOrders', 
+        type: 'link' 
+    },     
+    { label: 'Valor', fieldName: 'backlogOrders', type: 'currency',        
+        cellAttributes: {
+            currencyCode: { fieldName: 'currencyCode'} , 
+            currencyDisplayAs: 'symbol',              
+        }
+    },                      
+    { 
+        label: 'One Page', 
+        fieldName: 'onePage',            
+        type: 'button-icon', 
+        cellAttributes: {             
+            iconName: { fieldName: 'onePageIcon' },            
+            iconVariant: {fieldName: 'onePageIconVariant'}
+        }        
+    }           
 ];
 
 
@@ -119,11 +126,14 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
                     parentId: account.id,
                     buttonVisibility: '',
                     status: account.status,           
-                    statusIcon: 'utility:error',
-                    statusIconVariant: 'error',
                     webSite: account.webSite,
                     backlogOrders: account.backlogOrders,
-                    backlogOrdersUrl: `/${account.id}`
+                    currencyCode: account.currencyCode,
+                    backlogOrdersUrl: `/${account.id}`,
+                    statusIcon: account.statusIcon,
+                    statusIconClass: account.statusIconClass,                    
+                    onePageIcon: 'utility:company',
+                    onePageIconVariant: 'bare'
                 }
 
                 const processedChildren = (children) => {
@@ -137,11 +147,15 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
                             recordUrl: `/${child.id}`,
                             parentId: child.parentId,
                             status: child.status,
-                            statusIcon: 'utility:success',
-                            statusIconVariant: 'success',
                             parentUrl: `/${account.id}`,
                             parentName: account.name,     
+                            backlogOrders: child.backlogOrders,
+                            currencyCode: child.currencyCode,
                             webSite: child.webSite,
+                            statusIcon: child.statusIcon,
+                            statusIconClass: child.statusIconClass,
+                            onePageIcon: '',
+                            onePageIconVariant: 'bare'
                         })                            
                     );
 
@@ -194,21 +208,41 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
 
 
 
-    navigateToOrderPage(event) {
+    navigateToPage(event) {
         const { recordId, fieldName } = event.detail;
         
+        let direction
+        let encodeDef
 
-        switch (fieldName) {
-            case 'backlogOrders':
+        switch (fieldName) {            
+            case 'onePage':
 
-                let direction = {
+                direction = {
                     componentDef: 'c:accountOnePage', 
                     attributes: {
                         recordId: recordId
                     }               
                 }
     
-                let encodeDef = btoa(JSON.stringify(direction));
+                encodeDef = btoa(JSON.stringify(direction));
+    
+                this[NavigationMixin.Navigate]({
+                    type: 'standard__webPage',
+                    attributes: {url: '/one/one.app#'+encodeDef}
+                });
+
+                break;
+
+            case 'backlogOrders':
+
+                direction = {
+                    componentDef: 'c:orderOnePage', 
+                    attributes: {
+                        recordId: recordId
+                    }               
+                }
+    
+                encodeDef = btoa(JSON.stringify(direction));
     
                 this[NavigationMixin.Navigate]({
                     type: 'standard__webPage',

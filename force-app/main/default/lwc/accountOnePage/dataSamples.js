@@ -2,7 +2,7 @@
 export function itensPedido() {
     return [
         {            
-            id: 11,
+            id: '11',
             produto: 'PRODUTO 1',
             quantidade: 1200,
             qtdFaturada: 1200,
@@ -16,7 +16,7 @@ export function itensPedido() {
                 columns: colunasNfItemMae() ,    
                 data: [
                     { 
-                        id: 222,                        
+                        id: '222',                        
                         serie: '000000001-001',
                         emissao: '2025-02-13',
                         valor: 2500
@@ -34,7 +34,12 @@ export function colunasItem(){
             {label: 'Qtd. Faturada', fieldName: 'qtdFaturada', type: 'number'},
             {label: 'Qtd. Disponível', fieldName: 'qtdDisponivel', type: 'number'},
             {label: 'Entrega', fieldName: 'entrega', type: 'date'},
-            {label: 'Valor', fieldName: 'valor', type: 'currency'},
+            {label: 'Valor', fieldName: 'valor', type: 'currency',
+                typeAttributes: {
+                    currencyCode: 'BRL',
+                    currencyDisplayAs: 'code'
+                }
+            },
             {label: 'Pagamento', fieldName: 'pagamento', type: 'text'},
             {label: 'Status', fieldName: 'status', type: 'text'}     
     ];    
@@ -47,7 +52,12 @@ export function colunasItemMae(){
             {label: 'Qtd. Desmembrada', fieldName: 'qtdDesmembrada', type: 'number'},
             {label: 'Saldo a Desmembrar', fieldName: 'saldoDesmembrar', type: 'number'},
             {label: 'Cadencia Entrega', fieldName: 'cadenciaEntrada', type: 'text'},
-            {label: 'Valor', fieldName: 'valor', type: 'currency'},            
+            {label: 'Valor', fieldName: 'valor', type: 'currency',
+                typeAttributes: {
+                    currencyCode: 'BRL',
+                    currencyDisplayAs: 'code'
+                }
+            },            
             {label: 'Status', fieldName: 'status', type: 'text'}     
     ];    
 }
@@ -59,8 +69,18 @@ export function colunasNfItemMae(){
         {label: 'Emissão', fieldName: 'emissao', type: 'date'},        
         {label: 'Fazenda', fieldName: 'fazenda', type: 'text'},        
         {label: 'Qtd. Faturada', fieldName: 'qtdFaturada', type: 'number'},
-        {label: 'Vlr Unitário', fieldName: 'valorUnitario', type: 'currency'},
-        {label: 'Vlr Total', fieldName: 'valorTotal', type: 'currency'}     
+        {label: 'Vlr Unitário', fieldName: 'valorUnitario', type: 'currency',
+            typeAttributes: {
+                currencyCode: 'BRL',
+                currencyDisplayAs: 'code'
+            }
+        },
+        {label: 'Vlr Total', fieldName: 'valorTotal', type: 'currency',            
+            typeAttributes: {
+                currencyCode: 'BRL',
+                currencyDisplayAs: 'code'
+            }            
+        }     
     ];
    
 }
@@ -84,9 +104,28 @@ export function colunasPedido(){
         {label: 'Segmento', fieldName: 'segmento', type: 'text'},        
         {label: 'Tipo de Pedido', fieldName: 'tipo', type: 'text'},        
         {label: 'Tipo de Pgto', fieldName: 'tipoPgto', type: 'text'},        
-        {label: 'Valor', fieldName: 'valor', type: 'currency'},        
-        {label: 'Pagamento', fieldName: 'pagamento', type: 'text'},        
-        {label: 'Status', fieldName: 'status', type: 'text'},        
+        {label: 'Valor', fieldName: 'valor', type: 'currency', 
+            typeAttributes: {
+                currencyCode: 'BRL',
+                currencyDisplayAs: 'code'
+            }
+        },        
+        {label: 'Pagamento', fieldName: 'pagamento', type: 'text'},
+        { label: 'Status', fieldName: 'status', type: 'text',
+            cellAttributes: {
+                iconName: { fieldName: 'statusIcon'},
+                iconPosition: 'left',
+                iconStyle: { fieldName: 'statusIconVariant'}
+            } 
+        },                  
+        { label: 'NF', 
+            type: 'button-icon', 
+            fieldName: 'invoices',            
+            cellAttributes: {             
+                iconName: { fieldName: 'invoicesIcon'} ,            
+                iconVariant: { fieldName: 'invoicesIconVariant'}
+            },      
+        }      
     ]
 }
 
@@ -101,7 +140,7 @@ export function pedidos(){
 export function pedidosNormal(){
     return [
         {
-            id: 1010,            
+            id: '1010',            
             numero: '4444',
             fazenda: 'Fazenda',
             segmento: 'Segmento',
@@ -109,12 +148,16 @@ export function pedidosNormal(){
             tipoPgto: 'Cash',
             valor: 7500,            
             pagamento: '30 DDL',
-            status: 'Aprovado', 
+            status: 'Bloqueado', 
             levelType : 'itemMae',           
             children : { 
                 columns: colunasItem(),
                 data: itensPedido()            
-            }           
+            },
+            statusIcon: 'utility:error', 
+            statusIconVariant: '--sds-c-icon-color-foreground-default: #ff0000 !important',
+            invoicesIcon: '',
+            invoicesIconVariant: 'bare'           
         }
      ]        
 }
@@ -124,7 +167,7 @@ export function pedidosNormal(){
 export function pedidosMae() {
     return [
         {
-            id: 100,            
+            id: '100',            
             numero: '0123',
             fazenda: 'Fazenda',
             segmento: 'Segmento',
@@ -137,7 +180,11 @@ export function pedidosMae() {
             children : { 
                 columns: colunasItemMae(),
                 data: itensPedidoMae()            
-            }           
+            },
+            statusIcon: 'utility:success', 
+            statusIconVariant: '--sds-c-icon-color-foreground-default: #ffa500 !important',
+            invoicesIcon: 'utility:file',
+            invoicesIconVariant: 'bare'
         }
     ]
 }
@@ -145,7 +192,7 @@ export function pedidosMae() {
 export function itensPedidoMae(){
     return [
         {            
-            id: 110,
+            id: '110',
             produto: 'PRODUTO 3',
             quantidade: 1200,
             qtdDesmembrada: 0,
@@ -165,7 +212,7 @@ export function itensPedidoMae(){
 export function pedidosFilhoMae() {
     return [       
         {                        
-            id: 1,            
+            id: '1',            
             numero: '123',            
             contratoSap: '000008081',
             fazenda: 'Fazenda',
@@ -185,7 +232,7 @@ export function pedidosFilhoMae() {
 export function itensNfMae(){
     return [
         {
-            id: 1111,
+            id: '1111',
             serie: '000001-001',
             emissao: '2024-12-31',
             fazenda: 'Fazenda',

@@ -11,32 +11,41 @@
         </div>
     </template>
     <template if:false={showNoData}>
-        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
-            <thead>
-                <template for:each={processedMainRecords.columns} for:item="column">
-                    <th key={column.fieldName} aria-label={column.label} scope="col">
-                        <span class="slds-truncate" title={column.label}>{column.label}</span>
-                    </th>
-                </template>
+        <div class="slds-table slds-table_bordered slds-table_cell-buffer">        
+            <table class="slds-table slds-table_bordered">
+                <thead>
+                    <template for:each={processedMainRecords.columns} for:item="column">
+                        <th key={column.fieldName} aria-label={column.label} scope="col">
+                            <span class="slds-truncate" title={column.label}>{column.label}</span>
+                        </th>
+                    </template>
 
-            </thead>
-            <tbody>
-                <template for:each={processedMainRecords.data} for:item="recordItem">
-                    <!-- First Level -->
-                    <tr key={recordItem.id} data-id={recordItem.id} aria-selected="false" class="slds-hint-parent">
-                        <template for:each={recordItem.cells} for:item="cell">
-                            <!-- Fist column-->
-                            <template lwc:if={cell.firstField}>
-                                <template lwc:if={recordItem.hasChildren}>
-                                    <td key={cell.fieldName} class="slds-p-left_none" height="5px">
-                                        <lightning-button-icon class="slds-p-left_x-small" icon-name={recordItem.icon}
-                                            data-id={recordItem.id} variant="bare" value={recordItem}
-                                            onclick={handleExpand}>
-                                        </lightning-button-icon>
-                                        <c-data-grid-field record-data={recordItem} cell={cell}
-                                            onlocalnavigate={handleNavigateClick}></c-data-grid-field>
-                                    </td>
+                </thead>
+                <tbody>
+                    <template for:each={processedMainRecords.data} for:item="recordItem">
+                        <!-- First Level -->
+                        <tr key={recordItem.id} data-id={recordItem.id} aria-selected="false" class="slds-hint-parent">
+                            <template for:each={recordItem.cells} for:item="cell">
+                                <!-- Fist column-->
+                                <template lwc:if={cell.firstField}>
+                                    <template lwc:if={recordItem.hasChildren}>
+                                        <td key={cell.fieldName} class="slds-p-left_none" height="5px">
+                                            <lightning-button-icon class="slds-p-left_x-small" icon-name={recordItem.icon}
+                                                data-id={recordItem.id} variant="bare" value={recordItem}
+                                                onclick={handleExpand}>
+                                            </lightning-button-icon>
+                                            <c-data-grid-field record-data={recordItem} cell={cell}
+                                                onlocalnavigate={handleNavigateClick}></c-data-grid-field>
+                                        </td>
+                                    </template>
+                                    <template lwc:else>
+                                        <td key={cell.fieldName}>
+                                            <c-data-grid-field record-data={recordItem} cell={cell}
+                                                onlocalnavigate={handleNavigateClick}></c-data-grid-field>
+                                        </td>
+                                    </template>
                                 </template>
+                                <!-- Other columns-->
                                 <template lwc:else>
                                     <td key={cell.fieldName}>
                                         <c-data-grid-field record-data={recordItem} cell={cell}
@@ -44,30 +53,23 @@
                                     </td>
                                 </template>
                             </template>
-                            <!-- Other columns-->
-                            <template lwc:else>
-                                <td key={cell.fieldName}>
-                                    <c-data-grid-field record-data={recordItem} cell={cell}
-                                        onlocalnavigate={handleNavigateClick}></c-data-grid-field>
-                                </td>
-                            </template>
-                        </template>
-                    </tr>
-                    <!-- Tabela de Itens ( first level expandida) -->
-                    <template if:true={recordItem.isExpanded}>
-                        <tr key={recordItem.expanded} class="slds-hint-parent">
-                            <td class="vertical-line" colspan={recordItem.children.columns.length}>
-                                <div class="slds-p-top_large slds-p-bottom_large">
-                                    <!-- Second Level -->
-                                    <c-data-grid main-records={recordItem.children}
-                                        onlocalnavigate={handleNavigateClick}>
-                                    </c-data-grid>
-                                </div>
-                            </td>
                         </tr>
+                        <!-- Tabela de Itens ( first level expandida) -->
+                        <template if:true={recordItem.isExpanded}>
+                            <tr key={recordItem.expanded} class="slds-hint-parent">
+                                <td class="vertical-line" colspan={recordItem.children.columns.length}>
+                                    <div class="slds-p-top_large slds-p-bottom_large">
+                                        <!-- Second Level -->
+                                        <c-data-grid main-records={recordItem.children}
+                                            onlocalnavigate={handleNavigateClick}>
+                                        </c-data-grid>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
                     </template>
-                </template>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </template>
 </template>

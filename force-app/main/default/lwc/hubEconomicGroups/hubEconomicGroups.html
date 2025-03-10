@@ -34,50 +34,25 @@
         </template>    
     </template>
 
-    <template if:false={isMobile}>   
-                               
-        <lightning-card title="Grupos Econômicos" icon-name="standard:account">  
+    <template if:false={isMobile}>       
+        <lightning-card title="Grupos Econômicos" icon-name="standard:account" variant="base">  
             <lightning-button-group slot="actions">                
                 <lightning-input type="search" value={searchTerm} 
                     onchange={handleSearchChange} 
                     placeholder="Digite o nome do cliente"
                 >
                 </lightning-input>
-            </lightning-button-group>     
+            </lightning-button-group>                
+            <div class="slds-p-around_small"> 
+                <template  lwc:if={mainRecords} >      
+                    <c-data-grid 
+                        main-records={mainRecords}                    
+                        onnavigate={navigateToPage}                                                      
+                    ></c-data-grid>         
+                </template>      
+            </div>
+        </lightning-card>        
           
-            
-        <!--
-        <lightning-tree-grid class="lightning-tree-grid"
-            columns={columns}
-            data={treeData}
-            key-field="id"
-            hide-checkbox-column="true"
-            onrowaction={handleRowAction}
-        >        
-        </lightning-tree-grid> -->
-        
-        <lightning-card title="Released">
-            <template lwc:if={mainRecords}>
-                <c-data-grid
-                    main-records={mainRecords}                                
-                    onnavigate={navigateToOrderPage}
-                >
-                </c-data-grid>
-            </template>
-        </lightning-card>
-
-        <lightning-card title="Developer">
-            <template lwc:if={mainRecords}>        
-                <c-dynamic-html-table
-                    main-records={mainRecords}
-                    onrowaction={handleRowAction}
-                    onnavigate={navigateToOrderPage}
-                ></c-dynamic-html-table> 
-            </template>
-        </lightning-card>
-        
-        
-        </lightning-card>
     </template>        
 </template>
 

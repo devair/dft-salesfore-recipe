@@ -38,6 +38,16 @@
 }
 
 
-.vibrant-pink-50-icon{
-    --sds-c-icon-color-foreground-default: #E3066A;
+/* Backup do datagridfields*/
+
+.pointer { 
+    cursor: pointer;
+}
+
+.button-text-color{
+    --slds-c-button-text-color: #E3066A !important;    
+}
+
+.icon-color{
+    --sds-c-icon-color-foreground-default: #E3066A !important;
 }
