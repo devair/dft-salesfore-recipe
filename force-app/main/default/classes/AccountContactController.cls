@@ -18,6 +18,7 @@ public with sharing class AccountContactController {
                 Map<String, String> mapStatusIcon = getStatusIcon(parent.BlockStatus__c);                
                 parentWrapper.statusIcon = mapStatusIcon.get('icon');
                 parentWrapper.statusIconClass = mapStatusIcon.get('color');
+                parentWrapper.chave = generateRandomNumericString(44);
 
                 parentWrapper.webSite = parent.WebSite;
                 parentWrapper.backlogOrders = generateRandomNumber();
@@ -150,6 +151,7 @@ public with sharing class AccountContactController {
         @AuraEnabled public Integer backlogOrders;
         @AuraEnabled public String statusIconClass;
         @AuraEnabled public String statusIcon;
+        @AuraEnabled public String chave;
         @AuraEnabled public List<AccountWrapper> children;        
     }
 
@@ -187,5 +189,14 @@ public with sharing class AccountContactController {
 
     private static Integer generateRandomNumber() {
         return 100 + Math.mod(Math.abs(Crypto.getRandomInteger()), 9901);
+    }
+
+    private static String generateRandomNumericString(Integer length) {
+        String result = '';
+        for (Integer i = 0; i < length; i++) {
+            result += String.valueOf(Math.mod(Crypto.getRandomInteger(), 10));
+        }
+        
+        return result.replaceAll('-', '');
     }
 }

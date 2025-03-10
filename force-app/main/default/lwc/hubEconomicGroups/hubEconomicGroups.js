@@ -3,6 +3,7 @@ import getAccountsWithChildren from '@salesforce/apex/AccountContactController.g
 import { NavigationMixin } from 'lightning/navigation';
 import FORM_FACTOR from '@salesforce/client/formFactor';
 import { refreshApex } from "@salesforce/apex";
+import Toast from 'lightning/toast';
 
 const COLUMNS = [    
     { 
@@ -16,11 +17,18 @@ const COLUMNS = [
     },
     { label: 'Telefone', fieldName: 'phone', type: 'phone'        
     },
+    { label: 'Chave', fieldName: 'chave', type: 'text',
+        cellAttributes: {
+            iconName: 'utility:layers',
+            iconStyle: 'cursor: pointer;',
+            iconPosition: 'left'            
+        },
+    },
     { label: 'Status', fieldName: 'status', type: 'text',
         cellAttributes: {
-            iconName: { fieldName: 'statusIcon'},
+            iconName: { fieldName: 'statusIcon' },
             iconStyle: { fieldName: 'statusIconClass'},
-            iconPosition: 'left',                   
+            iconPosition: 'left'            
         },
     },
     { 
@@ -131,7 +139,8 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
                     currencyCode: account.currencyCode,
                     backlogOrdersUrl: `/${account.id}`,
                     statusIcon: account.statusIcon,
-                    statusIconClass: account.statusIconClass,                    
+                    statusIconClass: account.statusIconClass,   
+                    chave: account.chave,                 
                     onePageIcon: 'utility:company',
                     onePageIconVariant: 'bare'
                 }
@@ -208,8 +217,8 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
 
 
 
-    navigateToPage(event) {
-        const { recordId, fieldName } = event.detail;
+    async navigateToPage(event) {
+        const { recordId, fieldName, fieldValue } = event.detail;
         
         let direction
         let encodeDef
@@ -250,9 +259,29 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
                 });
 
                 break;
-        
+
+            case 'chave':                
+                if (fieldValue) {
+                    try {
+                        await navigator.clipboard.writeText(fieldValue);
+                        console.debug('Texto copiado:', fieldValue);
+                        this.toastNotification('Copiar chave', 'Chave copiada', 'dismissible', 'success');
+                    } catch (error) {                        
+                        console.error('Erro ao copiar:', error);
+                    }                    
+                }
+                break;        
             default:
                 break;
         }
+    }
+
+    toastNotification(label, message, mode, variant) {        
+        Toast.show({    
+            label: label,                    
+            message: message,            
+            mode: mode,
+            variant: variant
+        }, this);
     }
 }
