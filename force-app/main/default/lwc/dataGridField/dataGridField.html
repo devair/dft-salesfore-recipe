@@ -1,0 +1,117 @@
+<template lwc:render-mode="light">    
+    <!-- Date -->
+    <template lwc:if={cell.isDate}>                                    
+        <lightning-formatted-date-time value={cell.value} year="numeric" month="2-digit" day="2-digit">
+        </lightning-formatted-date-time>
+    </template>
+
+    <!-- Currency -->
+    <template lwc:elseif={cell.isCurrency}>     
+        <template lwc:if={cell.typeAttributes}>         
+            <lightning-formatted-number value={cell.value} 
+                format-style="currency" 
+                currency-code={cell.typeAttributes.currencyCode} 
+                currency-display-as={cell.typeAttributes.currencyDisplayAs}>                                        
+            </lightning-formatted-number>
+        </template>
+        <template lwc:elseif={cell.cellAttributes}>         
+            <lightning-formatted-number value={cell.value} 
+                format-style="currency" 
+                currency-code={cell.cellAttributes.currencyCode} 
+                currency-display-as={cell.cellAttributes.currencyDisplayAs}>                                        
+            </lightning-formatted-number>
+        </template>
+    </template>
+
+    <!-- Number -->
+    <template lwc:elseif={cell.isNumber}>                                    
+        <lightning-formatted-number value={cell.value}></lightning-formatted-number>
+    </template>
+
+    <!-- url -->
+    <template lwc:elseif={cell.isUrl}>
+        <lightning-formatted-url 
+            value={cell.value} 
+            target="_self"
+            label={cell.urlLabel}
+        ></lightning-formatted-url></p>                                            
+    </template>
+
+    <!-- internal link-->
+    <template lwc:elseif={cell.isLink}>        
+        <lightning-button 
+            data-id={recordData.id} 
+            data-field={cell.fieldName}            
+            onclick={handleButtonLinkClick}
+            label={cell.value} 
+            variant="base"                  
+            >            
+        </lightning-button>
+    </template>
+
+    <!-- Button -->
+    <template lwc:elseif={cell.isButton}>        
+        <lightning-button 
+            data-id={recordData.id} 
+            data-field={cell.fieldName}            
+            icon-name={cell.typeAttributes.iconName}             
+            onclick={handleButtonLinkClick}                   
+        >
+        </lightning-button>
+    </template>
+
+    <!-- Button Icon -->
+    <template lwc:elseif={cell.isButtonIcon}> 
+        <template lwc:if={cell.cellAttributes}>
+            <lightning-button-icon 
+                data-id={recordData.id} 
+                data-field={cell.fieldName}            
+                size="small"        
+                icon-name={cell.cellAttributes.iconName}     
+                icon-class={cell.cellAttributes.iconClass}                   
+                onclick={handleButtonLinkClick}   
+                variant={cell.cellAttributes.iconVariant}         
+            >
+            </lightning-button-icon>                                                    
+        </template>               
+    </template>
+
+    <!-- Text -->
+    <template lwc:else>
+        <template lwc:if={cell.cellAttributes}>
+            <template lwc:if={cell.cellAttributes.iconVariant}>
+                <lightning-icon icon-name={cell.cellAttributes.iconName}
+                    data-id={recordData.id}  
+                    data-field={cell.fieldName}
+                    name={cell.fieldName}   
+                    size="x-small"
+                    variant={cell.cellAttributes.iconVariant}
+                    onclick={handleButtonLinkClick}                               
+                >
+                </lightning-icon>  
+            </template>
+            <template lwc:elseif={cell.cellAttributes.iconStyle}>
+                <lightning-icon icon-name={cell.cellAttributes.iconName}
+                    data-id={recordData.id}  
+                    data-field={cell.fieldName}
+                    name={cell.fieldName}   
+                    size="x-small"                    
+                    onclick={handleButtonLinkClick} 
+                    style={cell.cellAttributes.iconStyle}
+                >
+                </lightning-icon>  
+            </template>
+            <template lwc:else>
+                <lightning-icon icon-name={cell.cellAttributes.iconName}
+                    data-id={recordData.id}  
+                    data-field={cell.fieldName}
+                    name={cell.fieldName}   
+                    size="x-small"                    
+                    onclick={handleButtonLinkClick}                     
+                >
+                </lightning-icon>  
+            </template>
+        </template>
+        {cell.value}
+    </template> 
+</template>

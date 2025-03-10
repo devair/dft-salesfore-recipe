@@ -1,0 +1,5 @@
+.vertical-line {
+    border-left: 2.5px solid #948888; /* Linha vertical preta */
+    padding-left: 8px !important; /* Ajuste opcional para espaçamento */
+    left: 15px;
+}

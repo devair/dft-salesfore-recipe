@@ -1,0 +1,59 @@
+<template>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_2-of-2 slds-medium-size_2-of-2 slds-var-m-bottom_small">
+            <p class="card-label">Fazenda</p>
+            <p class="card-field">
+                <lightning-formatted-url value={account.recordUrl} label={account.name} target="_self"
+                    class="record-link">
+                </lightning-formatted-url>
+            </p>
+        </div>
+
+        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-2 slds-var-m-bottom_small">
+            <p class="card-label">Inscrição Estadual</p>
+            <p class="card-field">9999999999</p>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-2 slds-var-m-bottom_small">
+            <p class="card-label">Código SAP</p>
+            <p class="card-field">1111111</p>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-2 slds-var-m-bottom_small">
+            <p class="card-label">Status do Cadastro</p>
+            <p class="card-field">
+                <span>                    
+                    <lightning-icon icon-name="utility:success" alternative-text="Habilitado" variant="success"
+                    title="Habilitado" size="xx-small">
+                    </lightning-icon>
+                    Habilitado
+                </span>
+            </p>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-2 slds-var-m-bottom_small">
+            <p class="card-label">Tipo de Bloqueio</p>
+            <p class="card-field">-</p>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-2 slds-var-m-bottom_small">
+            <p class="card-label">Pool de Comporas</p>
+            <p class="card-field">
+                <lightning-formatted-url 
+                  value="#"
+                  tooltip="Página do Pool de Compras"
+                  label=" Pool de compras"
+                  target="_self"
+                ></lightning-formatted-url>
+
+            </p>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-2 slds-var-m-bottom_small">
+            <p class="card-label">Pedidos em Carteira</p>
+            <p class="card-field">
+                <lightning-formatted-url 
+                  value="#"
+                  tooltip="Página de pedidos em carteira"
+                  label="10"
+                  target="_self"
+                ></lightning-formatted-url>
+            </p>
+        </div>
+    </div>
+</template>

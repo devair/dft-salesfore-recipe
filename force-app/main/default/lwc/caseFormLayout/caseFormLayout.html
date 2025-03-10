@@ -1,0 +1,144 @@
+<template>
+    <lightning-record-edit-form 
+        object-api-name={objectApiName} 
+        record-type-id={recordTypeId}
+        onsubmit={handleSubmit}
+        onsuccess={handleSuccess}        
+        onerror={handleError}>        
+        <div class="slds-m-around_medium">
+            <template if:true={fields}>
+                <lightning-card title="Dynamic Form">
+                    
+                    <lightning-messages></lightning-messages>
+
+                    <!-- SECÃO CLASSIFICAÇÃO DADOS DO SOLICITANTE-->
+                    <div class="section">
+                        <h3 class="label slds-section__title slds-truncate slds-p-around_x-small slds-theme_shade">
+                            <span class="slds-truncate" title="Dados do Solicitante">Dados do Solicitante </span>
+                        </h3>
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input-field lwc:ref="AT_CPFCNPJ__c" field-name="AT_CPFCNPJ__c"
+                                    required></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input-field lwc:ref="NomeCompleto__c" field-name="NomeCompleto__c"
+                                    required></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input-field lwc:ref="Telefone__c" field-name="Telefone__c"
+                                    required></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input-field lwc:ref="SuppliedEmail" field-name="SuppliedEmail"
+                                    required></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input-field lwc:ref="Birthday__c" field-name="Birthday__c"
+                                    required></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input-field lwc:ref="JaCliente__c" field-name="JaCliente__c"
+                                    required></lightning-input-field>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECÃO CLASSIFICAÇÃO DO CASO-->
+                    <div class="section">
+                        <h3 class="label slds-section__title slds-truncate slds-p-around_x-small slds-theme_shade">
+                            <span class="slds-truncate" title="Classificaçao do registro">Classificação do
+                                registro</span>
+                        </h3>
+
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input-field lwc:ref="Origin" required
+                                    field-name="Origin"></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input-field field-name="AT_ViaEntradaOrigem__c"></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">                                
+                                <lightning-record-picker class="slds-form-element slds-form-element_stacked"
+                                    lwc:ref="Product2" label="Produto" required
+                                    object-api-name="Product2"
+                                    value={AT_BankingProduct__c}
+                                    onchange={handleProductChange}></lightning-record-picker>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input-field lwc:ref="Convenio__c" field-name="Convenio__c"
+                                ></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input-field field-name="TipoDemanda__c"></lightning-input-field>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2"></div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-record-picker class="slds-form-element slds-form-element_stacked"
+                                    lwc:ref="BankingSubjects__c" label="AT Assunto" required
+                                    object-api-name="BankingSubjects__c"
+                                    value={AT_BankingSubject__c}
+                                    onchange={handleSubjectChange}></lightning-record-picker>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2"></div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-record-picker class="slds-form-element slds-form-element_stacked"
+                                    lwc:ref="BankingSubSubject__c" label="Sub Assunto" required
+                                    object-api-name="BankingSubSubjects__c"
+                                    value={BankingSubSubject__c}
+                                    onchange={handleSubSubjectChange}></lightning-record-picker>
+                            </div>                            
+                        </div>
+                    </div>
+
+                    <!-- SECÃO DADOS ADICIONAIS-->
+                    <template lwc:if={additionalFields}>
+                        <div class="section">
+                            <h3 class="label slds-section__title slds-truncate slds-p-around_x-small slds-theme_shade">
+                                <span class="slds-truncate" title="Classificaçao do registro">Dados Adicionais</span>
+                            </h3>
+                            <div class="slds-grid slds-wrap slds-gutters">
+                                <template for:each={additionalFields} for:item="field">
+                                    <div key={field.name} class="slds-col slds-size_1-of-2">
+                                        <lightning-input-field field-name={field.name} required>
+                                        </lightning-input-field>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- SECÃO DESCRIÇÃO-->
+                    <div class="section">
+                        <h3 class="label slds-section__title slds-truncate slds-p-around_x-small slds-theme_shade">
+                            <span class="slds-truncate" title="Descrição">Descrição</span>
+                        </h3>
+
+                        <div class="slds-grid slds-wrap slds-gutters">
+                            <div class="slds-col slds-size_2-of-2">
+                                <lightning-input-field lwc:ref="Description" field-name="Description"
+                                    required></lightning-input-field>
+                            </div>
+                        </div>
+                    </div>          
+                    
+                    <!-- Este botao deve permanecer hidden pois é acionado pelo Aura via evento-->                        
+                    <lightning-button class="submit-button-hiden slds-button slds-m-left_x-small"
+                        lwc:ref="hiddenSubmit"
+                        variant="brand"
+                        type="submit"
+                        hidden
+                        name="save"
+                        label="Save"                            
+                    ></lightning-button>
+                    
+                </lightning-card>
+            </template>
+        </div>
+    </lightning-record-edit-form>
+
+    <template if:true={error}>
+        <div class="slds-text-color_error">{error}</div>
+    </template>
+</template>

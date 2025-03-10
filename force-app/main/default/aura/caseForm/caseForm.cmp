@@ -1,0 +1,46 @@
+<aura:component controller="CaseFormController"
+    implements="lightning:actionOverride,force:hasRecordId,lightning:isUrlAddressable,force:hasSObjectName" 
+    access="global" 
+>  
+    <aura:attribute name="pageReference" type="Object"/>
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="recordTypeId" type="String"/>
+    <aura:attribute name="recordTypeName" type="String" />    
+    <!-- Aura attribute to control modal visibility -->
+    <aura:attribute name="isOpen" type="Boolean" default="false"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+    <aura:method name="getRecordTypeName" action="{!c.getRecordTypeName}" />
+    <aura:method name="loadRecordTypeId" action="{!c.loadRecordTypeId}" />
+    <aura:method name="newCase" action="{!c.newCase}" />
+    
+    <!-- Modal Content -->
+    <aura:if isTrue="{!v.isOpen}">
+        <div role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                class="slds-modal slds-fade-in-open slds-modal_small">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Novo caso: {!v.recordTypeName}</h2>
+                    <!-- Close button -->
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closeModal}">
+                        <lightning:icon iconName="utility:close" size="small" variant="inverse"/>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <!-- Your modal content here -->
+                    <c:caseFormLayout aura:id="lwcCaseFormLayout" recordTypeName="{!v.recordTypeName}" recordTypeId="{!v.recordTypeId}"/>
+                </div>                
+                <footer class="slds-modal__footer">
+                    <!-- Modal footer content here -->
+                    <div class="slds-grid slds-grid_align-center">
+                        <button class="slds-button slds-button_brand"  variant="brand"  onclick="{!c.handleLwcSubmit}">Save</button>
+                        <button class="slds-button slds-button_neutral" onclick="{!c.closeModal}">Close</button>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+</aura:component>	

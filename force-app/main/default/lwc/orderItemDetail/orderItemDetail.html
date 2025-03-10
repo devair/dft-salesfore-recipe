@@ -1,0 +1,76 @@
+<template>
+
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="">
+        <thead>            
+            <template for:each={columns} for:item="col">
+                <th key={col.name}>
+                    {col.label}
+                </th>
+            </template>        
+        </thead>
+        <tbody>
+            <template for:each={records} for:item="record">                                
+                <tr key={record.produto} data-id={record.id}>                                                                        
+                    <td class="slds-p-left_none">
+                        <template lwc:if={record.children}>
+                            <lightning-button-icon 
+                                icon-name={record.icon}  
+                                data-id = {record.id} 
+                                variant="bare"
+                                value={record}
+                                onclick={handleItemClick}
+                            >
+                            </lightning-button-icon>
+                        </template>
+                        {record.produto}
+                    </td>
+                    <td>{record.quantidade}</td>
+                    <td>{record.qtdFaturada}</td>
+                    <td>{record.qtdDisponível}</td>
+                    <td>
+                        <lightning-formatted-date-time value={record.entrega} year="2-digit" month="short" day="2-digit">                            
+                        </lightning-formatted-date-time>                        
+                    </td>
+
+                    <td>
+                        <lightning-formatted-number value={record.valor} format-style="currency" currency-code="BRL" currency-display-as="code"></lightning-formatted-number>
+                    </td>
+                    <td>{record.pagamento}</td>
+                    <td>{record.status}</td>
+                    
+                </tr>   
+                
+                <template lwc:if={record.isExpanded}>  
+                    <tr key={record.id} class="slds-hint-parent" data-id = {record.id} >
+                        <td colspan="8">                                                                                                      
+                            <table  class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="">
+                                    <thead>            
+                                        <template for:each={columnsChildren} for:item="col">
+                                            <th key={col.name}>
+                                                {col.label}
+                                            </th>
+                                        </template>        
+                                    </thead>
+                                    <tbody>            
+                                        <template for:each={record.children} for:item="nota"> 
+                                            <tr key={nota.numero}>
+                                                <td>{nota.numero}</td>
+                                                <td>
+                                                    <lightning-formatted-date-time value={nota.emissao} year="2-digit" month="short" day="2-digit">                            
+                                                    </lightning-formatted-date-time>                        
+                                                </td>
+                            
+                                                <td>
+                                                    <lightning-formatted-number value={nota.valor} format-style="currency" currency-code="BRL" currency-display-as="code"></lightning-formatted-number>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                            </table>
+                        </td>
+                    </tr>                                         
+                </template>
+            </template>
+        </tbody>
+    </table>
+</template>

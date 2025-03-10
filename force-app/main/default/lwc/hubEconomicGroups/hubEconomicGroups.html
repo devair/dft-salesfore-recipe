@@ -1,0 +1,58 @@
+<template>   
+    <template if:true={isMobile}>
+        <div class="fixed-header  slds-p-bottom_x-small">
+            <lightning-input type="search"
+                value={searchTerm} 
+                onchange={handleSearchChange} 
+                placeholder="Digite o nome do cliente"
+            ></lightning-input>
+        </div>
+        <template for:each={treeData} for:item="account">
+            <div key={account.id} class="slds-p-bottom_x-small">                                       
+                <lightning-accordion allow-multiple-sections-open 
+                    class="custom-accordion-section"
+                    active-section-name={activeSections}
+                >  
+                    <div class="slds-box slds-box_xx-small">
+                        <lightning-accordion-section  name={account.id} label={account.name}
+                            class="accordion_section"
+                        >  
+                            <lightning-button-icon icon-name="standard:client" 
+                                alternative-text="One Page"
+                                title="One Page"
+                                class="slds-button_icon-large"
+                                value={account.parentId} onclick={handleOnePage}
+                                variant="border-filled"
+                                slot="actions">
+                            </lightning-button-icon>
+
+                            <c-account-view account={account}></c-account-view>
+                        </lightning-accordion-section>
+                    </div>                                                      
+                </lightning-accordion>                                            
+            </div>
+        </template>    
+    </template>
+
+    <template if:false={isMobile}>       
+        <lightning-card title="Grupos Econômicos" icon-name="standard:account" variant="base">  
+            <lightning-button-group slot="actions">                
+                <lightning-input type="search" value={searchTerm} 
+                    onchange={handleSearchChange} 
+                    placeholder="Digite o nome do cliente"
+                >
+                </lightning-input>
+            </lightning-button-group>                
+            <div class="slds-p-around_small"> 
+                <template  lwc:if={mainRecords} >      
+                    <c-data-grid 
+                        main-records={mainRecords}                    
+                        onnavigate={navigateToPage}                                                      
+                    ></c-data-grid>         
+                </template>      
+            </div>
+        </lightning-card>        
+          
+    </template>        
+</template>
+
