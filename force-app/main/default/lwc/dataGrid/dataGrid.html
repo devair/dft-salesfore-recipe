@@ -58,7 +58,7 @@
                         <template if:true={recordItem.isExpanded}>
                             <tr key={recordItem.expanded} class="slds-hint-parent">
                                 <td class="vertical-line" colspan={recordItem.children.columns.length}>
-                                    <div class="slds-p-top_large slds-p-bottom_large">
+                                    <div class="slds-p-top_small slds-p-bottom_small">
                                         <!-- Second Level -->
                                         <c-data-grid main-records={recordItem.children}
                                             onlocalnavigate={handleNavigateClick}>
