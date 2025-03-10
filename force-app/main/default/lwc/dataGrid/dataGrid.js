@@ -58,11 +58,12 @@ export default class DataGrid extends LightningElement {
         event.preventDefault();
         const recordId = event.detail.recordId;
         const fieldName = event.detail.fieldName;
+        const fieldValue = event.detail.fieldValue;
         const record = findRecord(this.processedMainRecords.data, recordId)
 
         if (record) {
             this.dispatchEvent(new CustomEvent('navigate', {
-                detail: { recordId, record, fieldName },
+                detail: { recordId, record, fieldName, fieldValue },
                 bubbles: true,
                 composed: true
             }));

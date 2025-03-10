@@ -86,7 +86,8 @@
                     name={cell.fieldName}   
                     size="x-small"
                     variant={cell.cellAttributes.iconVariant}
-                    onclick={handleButtonLinkClick}                               
+                    onclick={handleButtonLinkClick}
+                    data-value={cell.value}                               
                 >
                 </lightning-icon>  
             </template>
@@ -98,6 +99,7 @@
                     size="x-small"                    
                     onclick={handleButtonLinkClick} 
                     style={cell.cellAttributes.iconStyle}
+                    data-value={cell.value}
                 >
                 </lightning-icon>  
             </template>
@@ -108,6 +110,7 @@
                     name={cell.fieldName}   
                     size="x-small"                    
                     onclick={handleButtonLinkClick}                     
+                    data-value={cell.value}
                 >
                 </lightning-icon>  
             </template>
