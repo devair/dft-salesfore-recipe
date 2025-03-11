@@ -114,7 +114,10 @@
                 >
                 </lightning-icon>  
             </template>
+            <span class="slds-p-left_xx-small">{cell.value}</span>
         </template>
-        {cell.value}
+        <template lwc:else>
+            <span>{cell.value}</span>
+        </template>
     </template> 
 </template>
