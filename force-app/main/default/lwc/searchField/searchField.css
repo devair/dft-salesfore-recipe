@@ -1,0 +1,51 @@
+.search-container {
+    position: relative;
+    width: 250px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 30px 8px 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+}
+
+.suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 150px; /* Exibe até 5 itens */
+    overflow-y: auto;
+    display: block;
+    border-radius: 0 0 4px 4px;
+    z-index: 3000;
+}
+
+.suggestion-item {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background: #f0f0f0;
+}
+
+/* Barra de rolagem */
+.suggestions::-webkit-scrollbar {
+    width: 6px;
+}
+
+.suggestions::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.suggestions::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

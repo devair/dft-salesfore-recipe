@@ -78,6 +78,7 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
         
     searchTimeout;
     
+    @track seachItens=[];
 
     
     @wire(getAccountsWithChildren, { searchTerm: '$searchTerm'})
@@ -120,11 +121,13 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
 */
     
     formatDataGrid(accounts) {
-        
+        this.seachItens=[];
         const columns = COLUMNS;
 
         const data = accounts.map(account => 
             {                               
+                this.seachItens.push({ value: account.name, id: account.id});
+
                 const root = {                
                     id: account.id,
                     name: account.name,                
@@ -189,7 +192,7 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
     }
 
     handleSearchChange(event){
-        const searchTerm = event.target.value;
+        const searchTerm = event.detail.value;
         this.searchTerm = searchTerm;
         
         // Limpando o timeout anterior se o usuário continuar digitando
@@ -283,5 +286,9 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
             mode: mode,
             variant: variant
         }, this);
+    }
+
+    handleSelectValue(event){
+        console.debug(JSON.stringify(event.detail));
     }
 }

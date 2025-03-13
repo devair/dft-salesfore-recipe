@@ -1,0 +1,19 @@
+<template>
+    <div class="search-container" onclick={stopPropagation}>
+        <lightning-input
+            type="search" 
+            placeholder="Buscar..." 
+            onchange={handleInput} 
+            onfocus={showSuggestions}
+            value={searchValue}
+        >
+        </lightning-input>
+        <div if:true={showSuggestionsList} class="suggestions">
+            <template for:each={filteredItems} for:item="item">
+                <div key={item} class="suggestion-item" onclick={handleSelect} data-id={item.id} data-value={item.value}>
+                    {item.value}
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

@@ -36,12 +36,15 @@
 
     <template if:false={isMobile}>       
         <lightning-card title="Grupos Econômicos" icon-name="standard:account" variant="base">  
-            <lightning-button-group slot="actions">                
-                <lightning-input type="search" value={searchTerm} 
+            <lightning-button-group slot="actions">                                                            
+                <c-search-field 
+                    value={searchTerm} 
+                    items={seachItens}
+                    placeholder="Digite o nome do cliente 2"
                     onchange={handleSearchChange} 
-                    placeholder="Digite o nome do cliente"
+                    onselect={handleSearchChange}
                 >
-                </lightning-input>
+                </c-search-field>
             </lightning-button-group>                
             <div class="slds-p-around_small"> 
                 <template  lwc:if={mainRecords} >      
