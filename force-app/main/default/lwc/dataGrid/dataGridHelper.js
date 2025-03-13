@@ -139,14 +139,16 @@ export const processRecords = (records, columns, expanded) => {
             cellAttributes: processCellAttributes(record, column)
         }));
         
-        const hasChildren = record?.children?.data && record?.children?.data.length > 0 ? true : false ;
+        const hasDataChildren = record?.children?.data?.length > 0;
+        const hasChildren = record.hasChildren || hasDataChildren ? true : false ;
 
         return {
             ...record,
             cells,                
             expanded: `expanded-${record.id}`,
             hasChildren: hasChildren,
-            children: hasChildren? processedChildren(record.children) : undefined,                
+            hasDataChildren: hasDataChildren,
+            children: hasDataChildren ? processedChildren(record.children) : undefined,                
             isExpanded: hasChildren && expanded ? true : false,
             icon: 'utility:chevronright'
         };            

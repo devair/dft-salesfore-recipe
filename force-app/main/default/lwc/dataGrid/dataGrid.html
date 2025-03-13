@@ -56,15 +56,24 @@
                         </tr>
                         <!-- Tabela de Itens ( first level expandida) -->
                         <template if:true={recordItem.isExpanded}>
-                            <tr key={recordItem.expanded} class="slds-hint-parent">
-                                <td class="vertical-line" colspan={recordItem.children.columns.length}>
-                                    <div class="slds-p-top_small slds-p-bottom_small">
-                                        <!-- Second Level -->
-                                        <c-data-grid main-records={recordItem.children}
-                                            onlocalnavigate={handleNavigateClick}>
-                                        </c-data-grid>
-                                    </div>
-                                </td>
+                            <tr key={recordItem.expanded} class="slds-hint-parent">                                
+                                <template lwc:if={recordItem.hasDataChildren}>
+                                    <td class="vertical-line" colspan={recordItem.children.columns.length}>
+                                        <div class="slds-p-top_small slds-p-bottom_small">
+                                            <!-- Second Level -->                                        
+                                            <c-data-grid main-records={recordItem.children}
+                                                onlocalnavigate={handleNavigateClick}
+                                                onexpand={handleExpand}
+                                            >                                            
+                                            </c-data-grid>
+                                        </div>
+                                    </td>
+                                </template>
+                                <template lwc:else>
+                                    <td  colspan={processedMainRecords.columns.length} >
+                                        <div class="slds-text-color_weak">Registros ainda não carregados</div>
+                                    </td>
+                                </template>                                
                             </tr>
                         </template>
                     </template>

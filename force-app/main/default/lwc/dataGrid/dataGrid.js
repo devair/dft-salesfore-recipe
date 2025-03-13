@@ -36,6 +36,12 @@ export default class DataGrid extends LightningElement {
         if (record) {
             this.changeElement(record);
         }
+
+        this.dispatchEvent(new CustomEvent('expand', {
+            detail: { recordId, record },
+            bubbles: true,
+            composed: true
+        }));
     }
     
     changeElement(elem) {
