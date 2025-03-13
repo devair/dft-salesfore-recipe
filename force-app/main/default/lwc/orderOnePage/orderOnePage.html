@@ -1,0 +1,191 @@
+<template>
+    <lightning-card  variant="Narrow" icon-name="standard:account"> 
+        <lightning-button-group slot="actions">                                
+        </lightning-button-group>        
+        <template lwc:if={accountRecord}>       
+            <h3 slot="title" class="lgc-bg">                        
+                {accountRecord.fields.Name.value}            
+            </h3>                                                               
+            <!-- Simple -->
+            <div class="slds-p-left_medium">            
+                <p class="slds-truncate" title="Última atualizção">
+                    <span>Última atualização: </span><lightning-formatted-date-time value={accountRecord.fields.LastModifiedDate.value}
+                        weekday="short" year="numeric" month="2-digit" day="2-digit"
+                        hour="2-digit" minute="2-digit" second="2-digit"
+                        time-zone-name="long"
+                    >
+                    </lightning-formatted-date-time>
+                </p>            
+            </div>                                  
+        </template>    
+        <lightning-card  
+            
+            variant="Narrow" icon-name="standard:order">         
+            <template lwc:if={orders}>
+                <c-data-grid
+                    main-records={orders}
+                    onexpand={handleExpand}
+                >
+                </c-data-grid>
+            </template>
+        </lightning-card>
+    </lightning-card>    
+
+    <!-- <div class="slds-box slds-box_xx-small">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th scope="col"><div class="slds-truncate" title="Nome do Produto">Nome do Produto</div></th>
+                    <th scope="col"><div class="slds-truncate" title="Quantidade">Quantidade</div></th>
+                    <th scope="col"><div class="slds-truncate" title="Qtd. Faturada">Qtd. Faturada</div></th>
+                    <th scope="col"><div class="slds-truncate" title="Valor Unitário">Valor Unitário</div></th>
+                    <th scope="col"><div class="slds-truncate" title="Valor Total">Valor Total</div></th>
+                    <th scope="col"><div class="slds-truncate" title="Cadência Entrega">Cadência Entrega</div></th>
+                    <th scope="col"><div class="slds-truncate" title="Status">Status</div></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="slds-hint-parent">
+                    <td style="vertical-align: top;"><div class="slds-truncate" title="Produto A">Produto A</div></td>
+                    <td style="vertical-align: top;"><div class="slds-truncate" title="100">100</div></td>
+                    <td style="vertical-align: top;"><div class="slds-truncate" title="80">80</div></td>
+                    <td style="vertical-align: top;"><div class="slds-truncate" title="R$ 50,00">R$ 50,00</div></td>
+                    <td style="vertical-align: top;"><div class="slds-truncate" title="R$ 5.000,00">R$ 5.000,00</div></td>
+                    <td style="vertical-align: top;"><div class="slds-truncate" title="Mensal">Mensal</div></td>
+                    <td style="vertical-align: top;"><div class="slds-truncate" title="Em Andamento">Em Andamento</div></td>
+                </tr>            
+                <tr class="slds-hint-parent">
+                    <td colspan="17">
+                        <div class="slds-p-top_large slds-p-bottom_large">
+
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th scope="col"><div class="slds-truncate" title="OV">OV</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Criada">Criada</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Tipo de Ordem">Tipo de Ordem</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Status da Ordem">Status da Ordem</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Repique Data Fixa PGT">Repique Data Fixa PGT</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Aprovação de Crédito">Aprovação de Crédito</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Item da OV">Item da OV</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Material">Material</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Quantidade">Quantidade</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Quantidade Remessa">Quantidade Remessa</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Quantidade Faturada">Quantidade Faturada</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Cadência">Cadência</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Cadência Fornecedor">Cadência Fornecedor</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Data Programada Entrega">Data Programada Entrega</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Pedido de Compra">Pedido de Compra</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Risco">Risco</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Responsável Técnico">Responsável Técnico</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="slds-hint-parent">
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="OV001">OV001</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="25/02/2025">25/02/2025</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Venda">Venda</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Em Progresso">Em Progresso</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Sim">Sim</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Aprovado">Aprovado</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="1">1</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Produto X">Produto X</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="100">100</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="90">90</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="85">85</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Mensal">Mensal</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Ativa">Ativa</div></td>
+                                        <td style="vertical-align: top;">
+                                            <div class="slds-truncate" title="10/03/2025">10/03/2025</div>
+                                            <div class="slds-truncate" title="Status: Entrega Confirmada">
+                                                <lightning-icon icon-name="utility:duration_downscale" size="small" class='vibrant-pink-50-icon' ></lightning-icon>
+                                                Entrega Confirmada
+                                            </div>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <div class="slds-truncate" title="PC-12345">PC-12345</div>
+                                            <div class="slds-truncate" title="Status: PC Liberado">Status: PC Liberado</div>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <div class="slds-truncate" title="Baixo">Baixo</div>
+                                            <div class="slds-truncate" title="Status: Risco Baixo">Status: Risco Baixo</div>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <div class="slds-truncate" title="João Silva">João Silva</div>
+                                            <div class="slds-truncate" title="Status: Crédito Aprovado">Status: Crédito Aprovado</div>
+                                        </td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="slds-hint-parent">
+                    <td colspan="17">
+                        <div class="slds-p-top_large slds-p-bottom_large">
+
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th scope="col"><div class="slds-truncate" title="OV">OV</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Criada">Criada</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Tipo de Ordem">Tipo de Ordem</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Status da Ordem">Status da Ordem</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Repique Data Fixa PGT">Repique Data Fixa PGT</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Aprovação de Crédito">Aprovação de Crédito</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Item da OV">Item da OV</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Material">Material</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Quantidade">Quantidade</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Quantidade Remessa">Quantidade Remessa</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Quantidade Faturada">Quantidade Faturada</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Cadência">Cadência</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Cadência Fornecedor">Cadência Fornecedor</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Data Programada Entrega">Data Programada Entrega</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Pedido de Compra">Pedido de Compra</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Risco">Risco</div></th>
+                                        <th scope="col"><div class="slds-truncate" title="Responsável Técnico">Responsável Técnico</div></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="slds-hint-parent">
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="OV001">OV001</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="25/02/2025">25/02/2025</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Venda">Venda</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Em Progresso">Em Progresso</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Sim">Sim</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Aprovado">Aprovado</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="1">1</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Produto X">Produto X</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="100">100</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="90">90</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="85">85</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Mensal">Mensal</div></td>
+                                        <td style="vertical-align: top;"><div class="slds-truncate" title="Ativa">Ativa</div></td>
+                                        <td style="vertical-align: top;">
+                                            <div class="slds-truncate" title="10/03/2025">10/03/2025</div>
+                                            <div class="slds-truncate" title="Status: Entrega Confirmada">Status: Entrega Confirmada</div>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <div class="slds-truncate" title="PC-12345">PC-12345</div>
+                                            <div class="slds-truncate" title="Status: PC Liberado">Status: PC Liberado</div>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <div class="slds-truncate" title="Baixo">Baixo</div>
+                                            <div class="slds-truncate" title="Status: Risco Baixo">Status: Risco Baixo</div>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <div class="slds-truncate" title="João Silva">João Silva</div>
+                                            <div class="slds-truncate" title="Status: Crédito Aprovado">Status: Crédito Aprovado</div>
+                                        </td>
+                                    </tr>
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div> -->
+</template>

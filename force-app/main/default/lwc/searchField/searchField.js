@@ -1,12 +1,12 @@
-import { LightningElement, track, api } from 'lwc';
+import { LightningElement, track, wire, api } from 'lwc';
 
 export default class SearchField extends LightningElement {
     @track searchValue = '';
     @track showSuggestionsList = false;
 
     // Lista de sugestões (poderia vir de um API)
-    @api items = [];
-
+    @api items = [];       
+    
     get filteredItems() {
         const query = this.searchValue.toLowerCase();
         return query ? this.items.filter(item => item.value.toLowerCase().includes(query)) : [];
