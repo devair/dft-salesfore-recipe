@@ -84,41 +84,13 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
     @wire(getAccountsWithChildren, { searchTerm: '$searchTerm'})
     wiredAccounts({ error, data }) {
         if (data) {            
-            //this.treeData = this.formatTreeData(data);     
             this.mainRecords = this.formatDataGrid(data);                        
+            this.treeData = this.mainRecords.data;
             
         } else if (error) {
             console.error('Erro ao carregar contas:', error);            
         }        
     }
-
-/*
-    formatTreeData(accounts) {
-        
-        let treeData = accounts.map(account => ({
-            id: account.id,
-            name: account.name,                
-            phone: account.phone,
-            status: account.status,  
-            recordUrl: `/${account.id}`,
-            parentId: account.id,            
-            webSite: account.webSite,
-            _children: account.children?.map(child => ({
-                id: child.id,
-                name: child.name,
-                phone: child.phone,
-                status: child.status,
-                recordUrl: `/${child.id}`,
-                parentId: child.parentId,
-                parentUrl: `/${account.id}`,
-                parentName: account.name,      
-                webSite: child.webSite                
-            }))
-        }));
-        
-        return treeData;
-    }
-*/
     
     formatDataGrid(accounts) {
         this.seachItens=[];
@@ -221,7 +193,7 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
 
 
     async navigateToPage(event) {
-        const { recordId, fieldName, fieldValue } = event.detail;
+        const { recordId, fieldName, fieldValue } = event.detail ;
         
         let direction
         let encodeDef
@@ -290,5 +262,11 @@ export default class HubEconomicGroups extends NavigationMixin(LightningElement)
 
     handleSelectValue(event){
         console.debug(JSON.stringify(event.detail));
+    }
+
+    handleOnePage(event){
+        const { recordId, fieldName, fieldValue } = event.currentTarget.dataset;
+
+        this.navigateToPage({detail: {recordId, fieldName, fieldValue}});
     }
 }

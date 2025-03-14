@@ -3,10 +3,10 @@
     <div>
 
     </div>
-    <template if:true={account._children.length}>
+    <template if:true={account.children.data.length}>
         <lightning-accordion allow-multiple-sections-open aria-label="Contas do grupo">            
             <lightning-accordion-section class="slds-accordion__list-item" role="listitem" label="Contas do grupo">
-                <template for:each={account._children} for:item="child">
+                <template for:each={account.children.data} for:item="child">
                     <div key={child.id} class="slds-p-bottom_x-small">
                         <lightning-card icon-name="standard:account" variant="base">
                             <div slot="title">
