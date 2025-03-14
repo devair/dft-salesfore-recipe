@@ -17,7 +17,36 @@
                     </lightning-formatted-date-time>
                 </p>            
             </div>                                  
-        </template>    
+        </template> 
+        <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-top_x-small slds-m-horizontal_none">
+            <lightning-layout>
+                <lightning-layout-item size="2" padding="around-small">
+                    <div class="custom-box">
+                        <c-search-field
+                        items={childAccounts}
+                        ></c-search-field>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="2"  padding="around-small">
+                    <div class="custom-box">
+                        <lightning-combobox                                                                              
+                          options={options}                          
+                          placeholder="Select status"
+                          value={valueOption}
+                          variant="standard"                                                      
+                        ></lightning-combobox>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="2" padding="around-small">
+                    <div class="custom-box">
+                        3
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item flexibility="auto, no-grow" padding="around-small">
+                    <div class="custom-box slds-box slds-p-around_medium slds-text-align_center">4</div>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>   
         <lightning-card  
             
             variant="Narrow" icon-name="standard:order">         

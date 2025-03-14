@@ -32,6 +32,8 @@ export default class SearchField extends LightningElement {
         this.searchValue = value;
         this.showSuggestionsList = false;
 
+        console.debug('selected option >', JSON.stringify({ value, id }));
+
         const selectedValue = new CustomEvent('select', {
             detail: { value, id}
         });

@@ -1,7 +1,7 @@
 import { LightningElement, api, track, wire } from 'lwc';
 import getOrders from '@salesforce/apex/OrdersController.getOrders';
 import getOrderItens from '@salesforce/apex/OrdersController.getOrderItens';
-
+import { getRelatedListRecords } from 'lightning/uiRelatedListApi';
 import { getRecord } from 'lightning/uiRecordApi';
 const COLUMNS = [
     { label: 'Pedido', fieldName: 'orderNumber', type: 'text'},
@@ -29,7 +29,6 @@ export default class OrderOnePage extends LightningElement {
     childrenColumns = CHILDREN_COLUMNS;
 
     accountRecord
-
     @wire(getRecord, {recordId: '$recordId',fields: ["Account.Name", "Account.LastModifiedDate"]})
     wiredAccount
     ({ error, data }){
@@ -40,7 +39,17 @@ export default class OrderOnePage extends LightningElement {
         else if(error){
             console.error('Erro ao carregar contas:', error);  
         }
-    }
+    }  
+
+    options=[
+        {
+            label: '--None--',
+            value: '',
+        },
+        { label: 'Op 1', value: 'op1'},
+        { label: 'Op 2', value: 'op2'},
+    ];
+    @track valueOption;
 
     @wire(getOrders, { parentId: '$recordId'})
     wiredAccounts({ error, data }) {
@@ -52,6 +61,33 @@ export default class OrderOnePage extends LightningElement {
         }        
     }
     
+    childAccounts
+    @wire(getRelatedListRecords, {
+        parentRecordId: '$recordId',
+        relatedListId: 'ChildAccounts',
+        fields: ['Account.Name','Account.Id'],
+        sortBy: ['Account.Name']
+    })
+    wiredChildren({error, data}){
+        if(data){
+            this.childAccounts = data.records.map(child =>{
+
+                return {
+                    id: child.fields.Id.value,
+                    value: child.fields.Name.value
+                }
+            })
+            
+            this.childAccounts = [ ... this.childAccounts, {
+                 id: this.recordId, 
+                 value: this.accountRecord.fields.Name.value }]
+
+        }
+        else if(error){
+            console.debug(JSON.stringify(error));
+        }
+    }
+
     // Monta os dados do nivel 1
     formatDataGrid(orders){
 
@@ -78,10 +114,10 @@ export default class OrderOnePage extends LightningElement {
         
         switch (record.type) {
             case 'Mãe':
-                this.getParentOrderItens(record)                
-                break;
             case 'Filho':
             case 'Normal':
+                this.getParentOrderItens(record)                
+                break;
                 // metodo para itens do pedido filho  e normal      
                 break;
             default:
@@ -93,7 +129,7 @@ export default class OrderOnePage extends LightningElement {
     // Obtém os dados do nivel
     async getParentOrderItens(record){
         try {
-            // Obtém os itens do pedido
+            // Obtém os itens do pedido            
             const orderItems = await getOrderItens({ orderId: record.id });            
             const data = orderItems.map(item => {
                 return {
@@ -106,9 +142,7 @@ export default class OrderOnePage extends LightningElement {
             // Atualiza o children o nivel
             const children = { data , columns: this.childrenColumns };
             record.children =  children;
-            record.hasDataChildren = true;                        
-            console.debug(JSON.stringify(this.orders));
-
+            record.hasDataChildren = true;                                    
         } catch (error) {
             console.error(JSON.stringify(error));
         }        
